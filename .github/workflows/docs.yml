@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'ci: publish generated report artifacts')
     runs-on: ubuntu-latest
 
     steps:
@@ -51,6 +52,10 @@ jobs:
         run: |
           python -m scripts.populate_report_fields
 
+      - name: Prepare LaTeX report
+        run: |
+          cp docs/report/references.bib _build/report/references.bib
+
       - name: Build LaTeX report
         uses: xu-cheng/texlive-action@v3
         with:
@@ -79,6 +84,21 @@ jobs:
           mkdir -p _build/html/pdf
           cp _build/report/main.pdf \
             _build/html/pdf/granular-rves-report.pdf
+
+      - name: Publish generated report artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add build_info.json report/granular-rves-report.pdf
+
+          if git diff --cached --quiet; then
+            echo "No generated report changes to commit."
+            exit 0
+          fi
+
+          git commit -m "ci: publish generated report artifacts"
+          git push origin HEAD:main
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
