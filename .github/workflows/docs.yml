@@ -55,6 +55,8 @@ jobs:
       - name: Prepare LaTeX report
         run: |
           cp docs/report/references.bib _build/report/references.bib
+          mkdir -p _build/report/sections
+          cp docs/report/sections/*.tex _build/report/sections/
 
       - name: Build LaTeX report
         uses: xu-cheng/texlive-action@v3
