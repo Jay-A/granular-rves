@@ -515,9 +515,8 @@ Features are documented as implemented, experimental, or planned. The roadmap sh
 
 ## Contributing
 
-The project is currently in early development.
-
-As the implementation stabilizes, contributions may include:
+The project is currently in early development, and before making contributions please reach out, but.
+as the implementation stabilizes, contributions may include:
 
 * verification benchmarks
 * constitutive models

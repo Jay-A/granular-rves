@@ -21,30 +21,64 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
-      - name: Install documentation dependencies
+      - name: Install project and development dependencies
         run: |
           python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
           python -m pip install \
             sphinx \
             myst-parser \
             pydata-sphinx-theme
 
-      - name: Build documentation
+      - name: Run tests
+        run: |
+          mkdir -p _build
+          python -m pytest --junitxml=_build/pytest.xml
+
+      - name: Generate build metadata
+        run: |
+          python -m scripts.generate_build_info \
+            --pytest-xml _build/pytest.xml
+
+      - name: Populate LaTeX report fields
+        run: |
+          python -m scripts.populate_report_fields
+
+      - name: Build LaTeX report
+        uses: xu-cheng/texlive-action@v3
+        with:
+          texlive_version: 2026
+          run: |
+            cd _build/report
+            latexmk \
+              -pdf \
+              -file-line-error \
+              -halt-on-error \
+              -interaction=nonstopmode \
+              main.tex
+
+      - name: Build Sphinx documentation
         run: |
           sphinx-build -b html docs _build/html
+
+      - name: Add PDF to documentation
+        run: |
+          mkdir -p _build/html/pdf
+          cp _build/report/main.pdf \
+            _build/html/pdf/granular-rves-report.pdf
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: _build/html
 

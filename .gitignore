@@ -2,19 +2,43 @@
 *
 **
 
-# Keep the repository metadata and top-level documentation
+# Repository metadata and top-level files
 !.gitignore
 !README.md
 !LICENSE
-
-# Documentation
-!docs/
-!docs/conf.py
-!docs/index.md
-!docs/pdf/
-!docs/pdf/index.md
+!pyproject.toml
+!build_info.json
 
 # GitHub Actions
 !.github/
 !.github/workflows/
 !.github/workflows/docs.yml
+
+# Documentation
+!docs/
+!docs/conf.py
+!docs/index.md
+
+# Documentation PDF page
+!docs/pdf/
+!docs/pdf/index.md
+
+# LaTeX report
+!docs/report/
+!docs/report/main.tex
+!docs/report/references.bib
+!docs/report/figures/
+!docs/report/figures/.gitkeep
+
+# Python package
+!src/
+!src/granular_rves/
+!src/granular_rves/__init__.py
+
+# Python tooling
+!scripts/
+!scripts/*.py
+
+# Tests
+!tests/
+!tests/*.py
