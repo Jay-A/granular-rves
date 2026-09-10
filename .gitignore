@@ -41,31 +41,46 @@
 !src/
 !src/granular_rves/
 !src/granular_rves/__init__.py
-# Python package
-!src/
-!src/granular_rves/
-!src/granular_rves/__init__.py
 
-!src/granular_rves/materials/
-!src/granular_rves/materials/*.py
-
+# Mechanics
 !src/granular_rves/mechanics/
-!src/granular_rves/mechanics/*.py
+!src/granular_rves/mechanics/__init__.py
 
-!src/granular_rves/geometry/
-!src/granular_rves/geometry/*.py
+!src/granular_rves/mechanics/kinematics/
+!src/granular_rves/mechanics/kinematics/__init__.py
 
-!src/granular_rves/boundary/
-!src/granular_rves/boundary/*.py
+!src/granular_rves/mechanics/constitutive/
+!src/granular_rves/mechanics/constitutive/__init__.py
 
-!src/granular_rves/loading/
-!src/granular_rves/loading/*.py
+!src/granular_rves/mechanics/balance/
+!src/granular_rves/mechanics/balance/__init__.py
 
-!src/granular_rves/solvers/
-!src/granular_rves/solvers/*.py
+!src/granular_rves/mechanics/contact/
+!src/granular_rves/mechanics/contact/__init__.py
 
-!src/granular_rves/output/
-!src/granular_rves/output/*.py
+!src/granular_rves/mechanics/damage/
+!src/granular_rves/mechanics/damage/__init__.py
+
+# Problem definition
+!src/granular_rves/problem/
+!src/granular_rves/problem/__init__.py
+
+!src/granular_rves/problem/geometry/
+!src/granular_rves/problem/geometry/__init__.py
+
+!src/granular_rves/problem/boundary/
+!src/granular_rves/problem/boundary/__init__.py
+
+!src/granular_rves/problem/loading/
+!src/granular_rves/problem/loading/__init__.py
+
+# Numerical infrastructure
+!src/granular_rves/numerical/
+!src/granular_rves/numerical/__init__.py
+
+# Input/output
+!src/granular_rves/io/
+!src/granular_rves/io/__init__.py
 
 # Python tooling
 !scripts/
