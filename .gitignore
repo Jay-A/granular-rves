@@ -1,0 +1,20 @@
+# Ignore everything
+*
+**
+
+# Keep the repository metadata and top-level documentation
+!.gitignore
+!README.md
+!LICENSE
+
+# Documentation
+!docs/
+!docs/conf.py
+!docs/index.md
+!docs/pdf/
+!docs/pdf/index.md
+
+# GitHub Actions
+!.github/
+!.github/workflows/
+!.github/workflows/docs.yml
