@@ -8,4 +8,10 @@ Three-dimensional computational mechanics of realistic granular microstructures 
 
 Documentation is currently under development.
 
-[View the project report](pdf/)
+[View the project report](pdf/index)
+
+```{toctree}
+:maxdepth: 2
+:hidden:
+
+pdf/index
