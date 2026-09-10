@@ -41,6 +41,31 @@
 !src/
 !src/granular_rves/
 !src/granular_rves/__init__.py
+# Python package
+!src/
+!src/granular_rves/
+!src/granular_rves/__init__.py
+
+!src/granular_rves/materials/
+!src/granular_rves/materials/*.py
+
+!src/granular_rves/mechanics/
+!src/granular_rves/mechanics/*.py
+
+!src/granular_rves/geometry/
+!src/granular_rves/geometry/*.py
+
+!src/granular_rves/boundary/
+!src/granular_rves/boundary/*.py
+
+!src/granular_rves/loading/
+!src/granular_rves/loading/*.py
+
+!src/granular_rves/solvers/
+!src/granular_rves/solvers/*.py
+
+!src/granular_rves/output/
+!src/granular_rves/output/*.py
 
 # Python tooling
 !scripts/
