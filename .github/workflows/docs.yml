@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   build:
-    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'ci: publish generated report artifacts')
+    if: "github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'ci: publish generated report artifacts')"
     runs-on: ubuntu-latest
 
     steps:
