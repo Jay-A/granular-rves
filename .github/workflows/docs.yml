@@ -64,6 +64,12 @@ jobs:
               -interaction=nonstopmode \
               main.tex
 
+      - name: Publish report PDF
+        run: |
+          mkdir -p report
+          cp _build/report/main.pdf \
+            report/granular-rves-report.pdf
+
       - name: Build Sphinx documentation
         run: |
           sphinx-build -b html docs _build/html

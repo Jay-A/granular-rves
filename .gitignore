@@ -4,6 +4,7 @@
 
 # Repository metadata and top-level files
 !.gitignore
+!.gitattributes
 !README.md
 !LICENSE
 !pyproject.toml
@@ -29,6 +30,10 @@
 !docs/report/references.bib
 !docs/report/figures/
 !docs/report/figures/.gitkeep
+
+# Generated research report
+!report/
+!report/*.pdf
 
 # Python package
 !src/
