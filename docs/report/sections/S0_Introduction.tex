@@ -1,0 +1,27 @@
+\section{Introduction}
+
+Granular materials exhibit mechanical behavior that emerges from interactions between individual particles and the evolving network of contacts through which forces are transmitted. 
+Numerical simulation of granular compaction is therefore a challenging computational mechanics problem. 
+During compaction, the contact topology can evolve substantially, frictional contact can govern the transmission of stresses, and large deformation may lead to highly localized mechanical response and, eventually, particle-scale failure or fracture. 
+These characteristics make the numerical representation of granular assemblies fundamentally different from that of a conventional continuum with a fixed material domain.
+
+Material point methods (MPM) and other particle-based approaches are consequently attractive for many large-deformation granular mechanics problems, since they can accommodate evolving configurations without relying on a conventional mesh that must remain well behaved throughout the deformation. 
+Finite element methods (FEM), however, provide a complementary computational framework in which the continuum formulation, constitutive response, contact treatment, boundary conditions, and numerical solution procedure can be specified and investigated systematically. 
+Rather than assuming a priori that one numerical method is preferable for all granular mechanics problems, this project uses FEM as a controlled computational framework for investigating how far a programmable finite element formulation can be developed for realistic three-dimensional granular assemblies.
+
+The \textit{Granular RVEs} project therefore develops a three-dimensional computational mechanics framework for realistic granular microstructures using FEniCSx. 
+The project begins with well-defined benchmark problems at the individual-grain level and progressively introduces interacting grains, frictional contact, periodic boundary conditions, and realistic three-dimensional grain geometries. 
+This progression is intended to establish a verified computational foundation in which the physical and numerical complexity of the simulations can be increased in a controlled manner.
+
+A central motivation for this development is the eventual comparison of finite element and alternative numerical formulations for granular compaction. 
+Realistic grain geometries and representative volume element (RVE) configurations provide a natural basis for such comparisons because the same microstructure, material parameters, loading conditions, and boundary conditions can in principle be supplied to different numerical frameworks. 
+Once the FEniCSx formulation is sufficiently developed and verified, these matched simulations can support one-to-one comparisons with other approaches, including material point methods, with respect to mechanical response, numerical behavior, computational cost, and practical limitations.
+
+The longer-term objective is to extend the computational framework from direct grain-scale simulation toward homogenization, model parameter identification, and uncertainty quantification. 
+These capabilities would provide a basis for connecting resolved microstructural simulations with reduced-order and data-driven models. 
+In particular, the resulting parameterized finite element simulations may ultimately serve as the high-fidelity model evaluations required for the development and assessment of surrogate models and neural-operator approaches for granular mechanics.
+
+At its current stage, the project focuses on establishing this computational foundation rather than claiming a complete solution to granular compaction. 
+The emphasis is on reproducible scientific software, verification of the underlying numerical formulations, and a progressive increase in physical complexity. 
+This provides a framework in which the capabilities and limitations of the FEniCSx approach can be evaluated rigorously as the project develops.
+

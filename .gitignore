@@ -30,6 +30,8 @@
 !docs/report/references.bib
 !docs/report/figures/
 !docs/report/figures/.gitkeep
+!docs/report/sections/
+!docs/report/sections/*.tex
 
 # Generated research report
 !report/
