@@ -2,7 +2,23 @@
 
 Three-dimensional computational mechanics of realistic granular microstructures.
 
-[**Click here for the documentation**](https://jay-a.github.io/granular-rves/)
+[![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://jay-a.github.io/granular-rves/)
+
+## Technologies
+
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![FEniCSx](https://img.shields.io/badge/FEniCSx-3D%20FEM-blue)
+![DOLFINx](https://img.shields.io/badge/DOLFINx-FEM-blue)
+![PETSc](https://img.shields.io/badge/PETSc-Solvers-00599C)
+![UFL](https://img.shields.io/badge/UFL-Variational%20Forms-4B8BBE)
+![Sphinx](https://img.shields.io/badge/Sphinx-Documentation-000000?logo=sphinx&logoColor=white)
+![MyST](https://img.shields.io/badge/MyST-Markdown-526CFE)
+![PyData](https://img.shields.io/badge/PyData%20Sphinx%20Theme-Documentation-F37626)
+![LaTeX](https://img.shields.io/badge/LaTeX-Report-008080?logo=latex&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-CI-2088FF?logo=githubactions&logoColor=white)
+![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Documentation-222222?logo=githubpages&logoColor=white)
+
+---
 
 **Status:** Early development
 

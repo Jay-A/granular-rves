@@ -8,99 +8,104 @@ The implementation roadmap is listed below. Each item identifies the principal s
 
 \begin{longtable}{p{0.06\textwidth} p{0.28\textwidth} p{0.48\textwidth} p{0.12\textwidth}}
 \toprule
-\textbf{ID} & \textbf{Task} & \textbf{Relevant files} & \textbf{Status} \
+\textbf{ID} & \textbf{Task} & \textbf{Relevant files} & \textbf{Status} \\
+\midrule
+\endfirsthead
+
+\toprule
+\textbf{ID} & \textbf{Task} & \textbf{Relevant files} & \textbf{Status} \\
 \midrule
 \endhead
 
 1 &
 Define the 3D cylinder geometry &
 \texttt{problem/geometry/cylinder.py} &
-TODO \
+TODO \\
 
 2 &
 Generate or import a tetrahedral mesh &
 \texttt{problem/geometry/cylinder.py}, \texttt{io/} &
-TODO \
+TODO \\
 
 3 &
 Define small-strain kinematics &
-\texttt{mechanics/kinematics/small_strain.py} &
-TODO \
+\texttt{mechanics/kinematics/small\_strain.py} &
+TODO \\
 
 4 &
 Implement isotropic linear elasticity &
-\texttt{mechanics/constitutive/linear_elastic.py} &
-TODO \
+\texttt{mechanics/constitutive/linear\_elastic.py} &
+TODO \\
 
 5 &
 Define the compression boundary conditions &
 \texttt{problem/boundary/} &
-TODO \
+TODO \\
 
 6 &
 Implement frictionless platen/contact treatment &
 \texttt{mechanics/contact/}, \texttt{problem/boundary/} &
-TODO \
+TODO \\
 
 7 &
 Define and assemble the variational problem &
 \texttt{mechanics/balance/}, \texttt{numerical/} &
-TODO \
+TODO \\
 
 8 &
 Solve the linear system with DOLFINx/PETSc &
 \texttt{numerical/} &
-TODO \
+TODO \\
 
 9 &
 Extract reaction forces and macroscopic response &
 \texttt{numerical/}, \texttt{io/} &
-TODO \
+TODO \\
 
 10 &
 Write VTK-compatible simulation output &
 \texttt{io/} &
-TODO \
+TODO \\
 
 11 &
 Implement an independent analytical or semi-analytical reference solution &
-\texttt{benchmarks/01_cylinder_compression/reference.py} &
-TODO \
+\texttt{benchmarks/01\_cylinder\_compression/reference.py} &
+TODO \\
 
 12 &
 Compare the finite element solution with the reference solution &
-\texttt{benchmarks/01_cylinder_compression/}, \texttt{tests/} &
-TODO \
+\texttt{benchmarks/01\_cylinder\_compression/}, \texttt{tests/} &
+TODO \\
 
 13 &
 Perform a mesh-convergence study &
-\texttt{benchmarks/01_cylinder_compression/experiment.yaml}, \texttt{tests/} &
-TODO \
+\texttt{benchmarks/01\_cylinder\_compression/experiment.yaml}, \texttt{tests/} &
+TODO \\
 
 14 &
 Add finite-strain kinematics &
-\texttt{mechanics/kinematics/finite_strain.py} &
-TODO \
+\texttt{mechanics/kinematics/finite\_strain.py} &
+TODO \\
 
 15 &
 Implement a compressible Neo-Hookean constitutive model &
-\texttt{mechanics/constitutive/neo_hookean.py} &
-TODO \
+\texttt{mechanics/constitutive/neo\_hookean.py} &
+TODO \\
 
 16 &
 Add the nonlinear finite-strain solver &
 \texttt{numerical/} &
-TODO \
+TODO \\
 
 17 &
 Compare small-strain and finite-strain solutions &
-\texttt{benchmarks/01_cylinder_compression/} &
-TODO \
+\texttt{benchmarks/01\_cylinder\_compression/} &
+TODO \\
 
 18 &
 Compute the relative $L^2$ strain-field error &
-\texttt{benchmarks/01_cylinder_compression/}, \texttt{io/} &
-TODO \
+\texttt{benchmarks/01\_cylinder\_compression/}, \texttt{io/} &
+TODO \\
 
 \bottomrule
 \end{longtable}
