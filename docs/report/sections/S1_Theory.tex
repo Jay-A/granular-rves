@@ -1,3 +1,167 @@
 \section{Theory}
 
-This section is under development.
+This section is currently being developed alongside the implementation. The immediate objective is to establish a verified three-dimensional finite element benchmark for compression of a single elastic cylinder between frictionless rigid platens. The benchmark will provide the first working mechanics problem for the project and establish the computational patterns that will later be extended to granular assemblies.
+
+The implementation roadmap is listed below. Each item identifies the principal source files expected to implement that capability. File names may change as the implementation develops; the list is intended to make the dependency structure of the first simulation explicit.
+
+\subsection{Implementation Roadmap}
+
+\begin{longtable}{p{0.06\textwidth} p{0.28\textwidth} p{0.48\textwidth} p{0.12\textwidth}}
+\toprule
+\textbf{ID} & \textbf{Task} & \textbf{Relevant files} & \textbf{Status} \
+\midrule
+\endhead
+
+1 &
+Define the 3D cylinder geometry &
+\texttt{problem/geometry/cylinder.py} &
+TODO \
+
+2 &
+Generate or import a tetrahedral mesh &
+\texttt{problem/geometry/cylinder.py}, \texttt{io/} &
+TODO \
+
+3 &
+Define small-strain kinematics &
+\texttt{mechanics/kinematics/small_strain.py} &
+TODO \
+
+4 &
+Implement isotropic linear elasticity &
+\texttt{mechanics/constitutive/linear_elastic.py} &
+TODO \
+
+5 &
+Define the compression boundary conditions &
+\texttt{problem/boundary/} &
+TODO \
+
+6 &
+Implement frictionless platen/contact treatment &
+\texttt{mechanics/contact/}, \texttt{problem/boundary/} &
+TODO \
+
+7 &
+Define and assemble the variational problem &
+\texttt{mechanics/balance/}, \texttt{numerical/} &
+TODO \
+
+8 &
+Solve the linear system with DOLFINx/PETSc &
+\texttt{numerical/} &
+TODO \
+
+9 &
+Extract reaction forces and macroscopic response &
+\texttt{numerical/}, \texttt{io/} &
+TODO \
+
+10 &
+Write VTK-compatible simulation output &
+\texttt{io/} &
+TODO \
+
+11 &
+Implement an independent analytical or semi-analytical reference solution &
+\texttt{benchmarks/01_cylinder_compression/reference.py} &
+TODO \
+
+12 &
+Compare the finite element solution with the reference solution &
+\texttt{benchmarks/01_cylinder_compression/}, \texttt{tests/} &
+TODO \
+
+13 &
+Perform a mesh-convergence study &
+\texttt{benchmarks/01_cylinder_compression/experiment.yaml}, \texttt{tests/} &
+TODO \
+
+14 &
+Add finite-strain kinematics &
+\texttt{mechanics/kinematics/finite_strain.py} &
+TODO \
+
+15 &
+Implement a compressible Neo-Hookean constitutive model &
+\texttt{mechanics/constitutive/neo_hookean.py} &
+TODO \
+
+16 &
+Add the nonlinear finite-strain solver &
+\texttt{numerical/} &
+TODO \
+
+17 &
+Compare small-strain and finite-strain solutions &
+\texttt{benchmarks/01_cylinder_compression/} &
+TODO \
+
+18 &
+Compute the relative $L^2$ strain-field error &
+\texttt{benchmarks/01_cylinder_compression/}, \texttt{io/} &
+TODO \
+
+\bottomrule
+\end{longtable}
+
+\subsection{Initial Benchmark: 3D Linear Elastic Cylinder}
+
+The first benchmark will solve the fully three-dimensional finite element problem for a cylindrical elastic body subjected to displacement-controlled compression between frictionless rigid platens. The finite element implementation will not use an axisymmetric formulation. Instead, the axisymmetric solution will serve as an independent reference against which the three-dimensional calculation can be verified.
+
+The initial material model will be isotropic, small-strain linear elasticity, parameterized by Young's modulus $E$ and Poisson's ratio $\nu$. The corresponding kinematic, constitutive, and equilibrium relations will be implemented using the mechanics modules identified in the roadmap above.
+
+The benchmark will initially focus on:
+
+\begin{itemize}
+\item three-dimensional geometry;
+\item small-strain kinematics;
+\item isotropic linear elasticity;
+\item displacement-controlled compression;
+\item frictionless interaction with the rigid platens;
+\item reaction-force extraction;
+\item VTK-compatible output; and
+\item comparison against an independent analytical or semi-analytical reference.
+\end{itemize}
+
+The purpose of this problem is not to represent granular mechanics yet. It is a controlled computational mechanics problem that allows the basic FEniCSx implementation, boundary treatment, solver configuration, output, and verification workflow to be established before introducing multiple grains, evolving contact networks, periodicity, and realistic grain geometries.
+
+\subsection{Reference Solution and Verification}
+
+The reference solution will be maintained independently of the core finite element implementation. In particular, the core package will not contain axisymmetric-specific logic merely to support this benchmark.
+
+The reference problem will exploit the axisymmetric structure of the cylindrical compression problem. The resulting displacement and stress fields are generally functions of radial and axial position and are not assumed to be spatially uniform near the platen interfaces. The reference calculation will therefore provide a physically meaningful comparison for the three-dimensional finite element solution rather than reducing the verification problem to a homogeneous uniaxial-stress calculation.
+
+Verification quantities will include the macroscopic reaction force and, where appropriate, displacement and strain-field comparisons. Mesh refinement will be used to determine whether the three-dimensional finite element solution approaches the reference solution systematically.
+
+\subsection{Finite-Strain Extension}
+
+After the small-strain benchmark has been verified, the same geometric and loading configuration will be extended to finite-strain elasticity. The finite-strain formulation will introduce the deformation gradient and a nonlinear constitutive response, initially using a compressible Neo-Hookean model whose small-strain limit is consistent with the selected linear-elastic material parameters.
+
+The finite-strain calculation will use the nonlinear solution infrastructure provided by DOLFINx and PETSc. The resulting solution will be compared with the small-strain calculation at increasing levels of compression.
+
+The comparison will include:
+
+\begin{itemize}
+\item reaction force versus applied engineering strain;
+\item selected stress and strain fields;
+\item displacement fields; and
+\item the relative $L^2$ error between the finite-strain and small-strain strain fields.
+\end{itemize}
+
+The strain-field comparison will be used to identify the deformation range over which the small-strain approximation remains adequate and the range in which finite-strain effects become significant. The interpretation of this comparison will distinguish kinematic effects from constitutive-model differences.
+
+\subsection{Planned Benchmark Structure}
+
+The first benchmark is expected to be organized independently from the core mechanics package:
+
+\begin{verbatim}
+benchmarks/
+`-- 01_cylinder_compression/     |-- README.md     |-- experiment.yaml
+    `-- reference.py
+\end{verbatim}
+
+The benchmark configuration will describe the physical experiment and numerical parameters, while the reusable implementation will remain in the \texttt{granular_rves} package. This separation is intended to keep benchmark-specific verification logic out of the general mechanics infrastructure.
+
+As the implementation matures, this section will be replaced progressively by the mathematical formulation, discretization details, solver configuration, verification methodology, and results associated with each completed milestone.
+
