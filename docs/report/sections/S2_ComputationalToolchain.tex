@@ -1,3 +1,63 @@
 \section{Computational Toolchain}
 
-This section is under development.
+\subsection{Geometry and Meshing}
+
+The geometry layer defines the physical domain of a computational problem and is responsible for producing the finite-element mesh used by the mechanics formulation. Geometry declarations are kept distinct from their numerical realization: the problem definition specifies the physical objects that constitute the model, while the geometry package determines how those objects are constructed, meshed, and converted into the finite-element representation required by DOLFINx.
+
+A computational problem may contain multiple geometry objects. Each object is identified by a semantic name and a geometry type, together with the parameters required to define its physical dimensions and placement. For example, a cylindrical specimen and two rigid platens can be declared independently:
+
+\begin{verbatim}
+geometry:
+  - name: specimen
+    type: cylinder
+    x0: [0.0, 0.0, 0.0]
+    x1: [0.0, 0.0, 0.010]
+    radius: 0.005
+
+  - name: bottom_platen
+    type: cylinder
+    x0: [0.0, 0.0, -0.001]
+    x1: [0.0, 0.0, 0.0]
+    radius: 0.010
+
+  - name: top_platen
+    type: cylinder
+    x0: [0.0, 0.0, 0.010]
+    x1: [0.0, 0.0, 0.011]
+    radius: 0.010
+\end{verbatim}
+
+The geometry package separates the declaration of these physical objects from mesh generation. The initial implementation is organized around the following responsibilities:
+
+\begin{description}
+    \item[\texttt{definitions.py}] Defines typed representations of geometry declarations. This layer describes what physical geometry has been requested and does not depend on Gmsh or DOLFINx.
+
+    \item[\texttt{registry.py}] Maps geometry type names, such as \texttt{cylinder}, \texttt{stl}, or \texttt{obj}, to their corresponding geometry implementations.
+
+    \item[\texttt{builders.py}] Provides the common realization interface used to construct geometric models from the typed geometry definitions.
+
+    \item[\texttt{cylinder.py}] Implements analytic cylindrical geometry. A cylinder is defined parametrically by its two end points and radius.
+
+    \item[\texttt{sources.py}] Provides interfaces for geometry originating from external surface or mesh sources, including formats such as STL and OBJ.
+
+    \item[\texttt{meshing.py}] Applies the mesh discretization policy, generates the finite-element mesh, assigns semantic physical groups, and converts the resulting model to the DOLFINx mesh representation.
+\end{description}
+
+The resulting package therefore follows the separation
+
+\begin{center}
+\textit{physical geometry declaration}
+$\;\longrightarrow\;$
+\textit{geometry realization}
+$\;\longrightarrow\;$
+\textit{mesh generation}
+$\;\longrightarrow\;$
+\textit{DOLFINx mesh}.
+\end{center}
+
+The initial discretization strategy uses conforming three-dimensional tetrahedral elements with first-order geometry. This provides a straightforward baseline for irregular three-dimensional grain geometries while leaving higher-order and curved discretizations available for later development. Mesh resolution is specified independently from the physical geometry through global mesh defaults, with optional local overrides for individual objects or features.
+
+Semantic physical groups are retained during mesh generation so that downstream boundary-condition, loading, and contact definitions can refer to physical entities by name rather than by Gmsh-specific integer identifiers. This provides a stable interface between the problem-definition layer and the mechanics formulation.
+
+The geometry package ultimately hands the generated mesh and associated entity tags to DOLFINx. Function-space construction, variational forms, assembly, and solution therefore remain outside the geometry layer. Similarly, adaptive mesh refinement is not treated as a geometry operation; the geometry layer provides the initial discretization, while any solution-driven refinement belongs to the numerical solution workflow.
+

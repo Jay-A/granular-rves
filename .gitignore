@@ -89,3 +89,22 @@
 # Tests
 !tests/
 !tests/*.py
+
+# Spack environment
+!environment/
+!environment/README.md
+!environment/spack.yaml
+!environment/spack.lock
+
+# Project-local Spack repository
+!spack/
+!spack/repo/
+!spack/repo/repo.yaml
+!spack/repo/packages/
+!spack/repo/packages/**
+
+# Python build/cache artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/

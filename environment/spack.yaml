@@ -1,0 +1,37 @@
+spack:
+  specs:
+  - python@3.12
+  - py-pip
+  - gmsh~med~fltk+opencascade
+  - py-fenics-dolfinx
+
+  repos:
+  - ../spack/repo
+
+  concretizer:
+    unify: true
+
+  view: true
+
+  packages:
+    gcc:
+      externals:
+      - spec: gcc@15.2.0 languages:='c,c++,fortran'
+        prefix: /usr
+        extra_attributes:
+          compilers:
+            c: /usr/bin/gcc
+            cxx: /usr/bin/g++
+            fortran: /usr/bin/gfortran
+
+      - spec: gcc@16.0.1 languages:=c,fortran
+        prefix: /usr
+        extra_attributes:
+          compilers:
+            c: /usr/bin/gcc-16
+            fortran: /usr/bin/gfortran-16
+
+  config:
+    build_jobs: 4
+
+
