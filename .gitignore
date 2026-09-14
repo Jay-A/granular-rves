@@ -11,6 +11,10 @@
 !README.md
 !pyproject.toml
 !build_info.json
+!.gitignore
+!.gitattributes
+!.github/
+!.github/**
 
 # -- Examples
 
