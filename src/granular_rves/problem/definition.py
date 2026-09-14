@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
+from granular_rves.mechanics.definitions import MechanicsDefinition
+
 
 @dataclass(frozen=True)
 class AnalysisDefinition:
@@ -110,6 +112,8 @@ class ProblemDefinition:
         Geometry object defining the physical domain.
     mesh
         Definition of the requested finite-element discretization.
+    mechanics
+        Definition of the mechanics models used by the simulation.
     loading
         Definition of the applied loading path.
     output
@@ -130,5 +134,8 @@ class ProblemDefinition:
     analysis: AnalysisDefinition
     geometry: Any
     mesh: MeshDefinition
+    mechanics: MechanicsDefinition
     loading: LoadingDefinition
     output: OutputDefinition
+
+
