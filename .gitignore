@@ -51,8 +51,10 @@
 !src/granular_rves/mechanics/__init__.py
 !src/granular_rves/mechanics/kinematics/
 !src/granular_rves/mechanics/kinematics/__init__.py
+!src/granular_rves/mechanics/kinematics/small_strain.py
 !src/granular_rves/mechanics/constitutive/
 !src/granular_rves/mechanics/constitutive/__init__.py
+!src/granular_rves/mechanics/constitutive/linear_elastic.py
 !src/granular_rves/mechanics/balance/
 !src/granular_rves/mechanics/balance/__init__.py
 !src/granular_rves/mechanics/contact/
@@ -65,6 +67,10 @@
 !tests/mechanics/
 !tests/mechanics/__init__.py
 !tests/mechanics/test_definitions.py
+!tests/mechanics/kinematics/
+!tests/mechanics/kinematics/test_small_strain.py
+!tests/mechanics/constitutive/
+!tests/mechanics/constitutive/test_linear_elastic.py
 
 # -- -- Problem (src) 
 !src/granular_rves/problem/
