@@ -32,6 +32,9 @@
 !docs/report/sections/
 !docs/report/sections/*.tex
 
+!report
+!report/granular-rves-report.pdf
+
 # -- Source package (src)
 
 !src/
