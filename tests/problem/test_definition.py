@@ -2,6 +2,12 @@ from __future__ import annotations
 
 import pytest
 
+from granular_rves.mechanics.definitions import (
+    BalanceDefinition,
+    ConstitutiveDefinition,
+    KinematicsDefinition,
+    MechanicsDefinition,
+)
 from granular_rves.problem.definition import (
     AnalysisDefinition,
     LoadingDefinition,
@@ -27,6 +33,23 @@ def make_problem() -> ProblemDefinition:
         mesh=MeshDefinition(
             size=0.25,
         ),
+        mechanics=MechanicsDefinition(
+            kinematics=KinematicsDefinition(
+                type="small_strain",
+                parameters={},
+            ),
+            constitutive=ConstitutiveDefinition(
+                type="linear_elastic",
+                parameters={
+                    "youngs_modulus": 1.0e6,
+                    "poisson_ratio": 0.3,
+                },
+            ),
+            balance=BalanceDefinition(
+                type="momentum",
+                parameters={},
+            ),
+        ),
         loading=LoadingDefinition(
             type="displacement",
             region="top",
@@ -49,6 +72,10 @@ def test_problem_definition() -> None:
     assert problem.analysis.type == "quasi_static"
     assert isinstance(problem.geometry, Cylinder)
     assert problem.mesh.size == 0.25
+    assert isinstance(problem.mechanics, MechanicsDefinition)
+    assert problem.mechanics.kinematics.type == "small_strain"
+    assert problem.mechanics.constitutive.type == "linear_elastic"
+    assert problem.mechanics.balance.type == "momentum"
     assert problem.loading.type == "displacement"
     assert problem.loading.region == "top"
     assert problem.loading.component == "z"
@@ -79,6 +106,23 @@ def test_geometry_is_preserved() -> None:
         analysis=AnalysisDefinition(type="quasi_static"),
         geometry=geometry,
         mesh=MeshDefinition(size=0.25),
+        mechanics=MechanicsDefinition(
+            kinematics=KinematicsDefinition(
+                type="small_strain",
+                parameters={},
+            ),
+            constitutive=ConstitutiveDefinition(
+                type="linear_elastic",
+                parameters={
+                    "youngs_modulus": 1.0e6,
+                    "poisson_ratio": 0.3,
+                },
+            ),
+            balance=BalanceDefinition(
+                type="momentum",
+                parameters={},
+            ),
+        ),
         loading=LoadingDefinition(
             type="displacement",
             region="top",
