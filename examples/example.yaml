@@ -12,13 +12,35 @@ geometry:
 mesh:
   size: 0.25
 
+mechanics:
+
+  kinematics:
+    small_strain: {}
+
+  constitutive:
+    linear_elastic:
+      youngs_modulus: 1.0e6
+      poisson_ratio: 0.3
+
+  balance:
+    momentum:
+      regime: quasi_static
+
+  boundary:
+    dirichlet:
+      bottom:
+        component: z
+        value: 0.0
+      top:
+        component: z
+
 loading:
   type: displacement
   region: top
   component: z
   start: 0.0
   end: -0.01
-  steps: 1
+  steps: 10
 
 output:
   directory: output/example
