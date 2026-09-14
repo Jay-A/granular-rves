@@ -59,6 +59,8 @@
 !src/granular_rves/mechanics/contact/__init__.py
 !src/granular_rves/mechanics/damage/
 !src/granular_rves/mechanics/damage/__init__.py
+!src/granular_rves/mechanics/boundary/
+!src/granular_rves/mechanics/boundary/__init__.py
 
 # -- -- Problem (src) 
 !src/granular_rves/problem/
@@ -76,8 +78,6 @@
 !src/granular_rves/problem/geometry/geometry_types/cylinder.py
 
 # -- -- Problem boundary/loading (src) 
-!src/granular_rves/problem/boundary/
-!src/granular_rves/problem/boundary/__init__.py
 !src/granular_rves/problem/loading/
 !src/granular_rves/problem/loading/__init__.py
 
