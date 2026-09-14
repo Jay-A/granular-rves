@@ -52,12 +52,19 @@ def main() -> None:
     problem = load_problem(args.problem)
 
     print(
-        f"Problem: {problem.name}\n"
+        f"\nProblem: {problem.name}\n"
         f"  Analysis: {problem.analysis.type}\n"
         f"  Geometry: {type(problem.geometry).__name__}\n"
         f"  Mesh size: {problem.mesh.size}\n"
         f"  Loading: {problem.loading.type} ({problem.loading.steps} steps)\n"
-        f"  Output: {problem.output.directory}"
+        f"  Output: {problem.output.directory}\n"
+    )
+
+    print(
+       "  Mechanics: \n"
+        f"    Kinematics: {problem.mechanics.kinematics.type}\n"
+        f"    Constitutive: {problem.mechanics.constitutive.type}\n"
+        f"    Balance: {problem.mechanics.balance.type}\n"
     )
 
 

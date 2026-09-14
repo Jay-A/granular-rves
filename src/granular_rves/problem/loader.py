@@ -16,6 +16,12 @@ from typing import Any
 
 import yaml
 
+from granular_rves.mechanics.definitions import (
+    BalanceDefinition,
+    ConstitutiveDefinition,
+    KinematicsDefinition,
+    MechanicsDefinition,
+)
 from granular_rves.problem.definition import (
     AnalysisDefinition,
     LoadingDefinition,
@@ -100,6 +106,7 @@ def _build_problem_definition(data: dict[str, Any]) -> ProblemDefinition:
         analysis_data = data["analysis"]
         geometry_data = data["geometry"]
         mesh_data = data["mesh"]
+        mechanics_data = data["mechanics"]
         loading_data = data["loading"]
         output_data = data["output"]
     except KeyError as exc:
@@ -108,6 +115,7 @@ def _build_problem_definition(data: dict[str, Any]) -> ProblemDefinition:
         ) from exc
 
     geometry = _build_geometry(geometry_data)
+    mechanics = _build_mechanics(mechanics_data)
 
     return ProblemDefinition(
         name=str(data["name"]),
@@ -118,6 +126,7 @@ def _build_problem_definition(data: dict[str, Any]) -> ProblemDefinition:
         mesh=MeshDefinition(
             size=float(mesh_data["size"]),
         ),
+        mechanics=mechanics,
         loading=LoadingDefinition(
             type=str(loading_data["type"]),
             region=str(loading_data["region"]),
@@ -128,6 +137,49 @@ def _build_problem_definition(data: dict[str, Any]) -> ProblemDefinition:
         ),
         output=OutputDefinition(
             directory=str(output_data["directory"]),
+        ),
+    )
+
+
+def _build_mechanics(data: dict[str, Any]) -> MechanicsDefinition:
+    """Construct the configured mechanics definition.
+
+    Parameters
+    ----------
+    data
+        Parsed mechanics configuration.
+
+    Returns
+    -------
+    MechanicsDefinition
+        Structured mechanics definition.
+    """
+    kinematics_data = data["kinematics"]
+    constitutive_data = data["constitutive"]
+    balance_data = data["balance"]
+
+    kinematics_type, kinematics_parameters = next(
+        iter(kinematics_data.items())
+    )
+    constitutive_type, constitutive_parameters = next(
+        iter(constitutive_data.items())
+    )
+    balance_type, balance_parameters = next(
+        iter(balance_data.items())
+    )
+
+    return MechanicsDefinition(
+        kinematics=KinematicsDefinition(
+            type=str(kinematics_type),
+            parameters=kinematics_parameters,
+        ),
+        constitutive=ConstitutiveDefinition(
+            type=str(constitutive_type),
+            parameters=constitutive_parameters,
+        ),
+        balance=BalanceDefinition(
+            type=str(balance_type),
+            parameters=balance_parameters,
         ),
     )
 
