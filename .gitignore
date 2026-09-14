@@ -1,30 +1,29 @@
-# Ignore everything
+# - Ignore everything by default - #
+
 *
 **
 
-# Repository metadata and top-level files
-!.gitignore
-!.gitattributes
-!README.md
+# -  Allow files as we add them for explicit intent - #
+
+# -- Repository metadata and top-level files
+
 !LICENSE
+!README.md
 !pyproject.toml
 !build_info.json
 
-# GitHub Actions
-!.github/
-!.github/workflows/
-!.github/workflows/docs.yml
+# -- Examples
 
-# Documentation
+!examples/
+!examples/example.yaml
+
+# -- Documentation
+
 !docs/
 !docs/conf.py
 !docs/index.md
-
-# Documentation PDF page
 !docs/pdf/
 !docs/pdf/index.md
-
-# LaTeX report
 !docs/report/
 !docs/report/main.tex
 !docs/report/references.bib
@@ -33,78 +32,98 @@
 !docs/report/sections/
 !docs/report/sections/*.tex
 
-# Generated research report
-!report/
-!report/*.pdf
+# -- Source package (src)
 
-# Python package
 !src/
 !src/granular_rves/
 !src/granular_rves/__init__.py
+!src/granular_rves/__main__.py
 
-# Mechanics
+# -- -- Mechanics (src) 
 !src/granular_rves/mechanics/
 !src/granular_rves/mechanics/__init__.py
-
 !src/granular_rves/mechanics/kinematics/
 !src/granular_rves/mechanics/kinematics/__init__.py
-
 !src/granular_rves/mechanics/constitutive/
 !src/granular_rves/mechanics/constitutive/__init__.py
-
 !src/granular_rves/mechanics/balance/
 !src/granular_rves/mechanics/balance/__init__.py
-
 !src/granular_rves/mechanics/contact/
 !src/granular_rves/mechanics/contact/__init__.py
-
 !src/granular_rves/mechanics/damage/
 !src/granular_rves/mechanics/damage/__init__.py
 
-# Problem definition
+# -- -- Problem (src) 
 !src/granular_rves/problem/
 !src/granular_rves/problem/__init__.py
+!src/granular_rves/problem/definition.py
+!src/granular_rves/problem/loader.py
 
+# -- -- Problem geometry (src) 
 !src/granular_rves/problem/geometry/
 !src/granular_rves/problem/geometry/__init__.py
+!src/granular_rves/problem/geometry/definitions.py
+!src/granular_rves/problem/geometry/meshing.py
+!src/granular_rves/problem/geometry/geometry_types/
+!src/granular_rves/problem/geometry/geometry_types/__init__.py
+!src/granular_rves/problem/geometry/geometry_types/cylinder.py
 
+# -- -- Problem boundary/loading (src) 
 !src/granular_rves/problem/boundary/
 !src/granular_rves/problem/boundary/__init__.py
-
 !src/granular_rves/problem/loading/
 !src/granular_rves/problem/loading/__init__.py
 
-# Numerical infrastructure
+# -- -- Numerical (src) 
 !src/granular_rves/numerical/
 !src/granular_rves/numerical/__init__.py
 
-# Input/output
+# -- -- I/O (src) 
 !src/granular_rves/io/
 !src/granular_rves/io/__init__.py
 
-# Python tooling
-!scripts/
-!scripts/*.py
+# -- Tests
 
-# Tests
 !tests/
-!tests/*.py
+!tests/manual/
+!tests/manual/test_gmsh_dolfinx.py
 
-# Spack environment
+!tests/problem/
+!tests/problem/__init__.py
+!tests/problem/test_definition.py
+
+!tests/problem/geometry/
+!tests/problem/geometry/__init__.py
+!tests/problem/geometry/test_definitions.py
+!tests/problem/geometry/test_meshing.py
+
+!tests/problem/geometry/geometry_types/
+!tests/problem/geometry/geometry_types/__init__.py
+!tests/problem/geometry/geometry_types/test_cylinder.py
+
+!tests/test_generate_build_info.py
+!tests/test_populate_report_fields.py
+!tests/test_pytest_metadata.py
+
+# -- Tooling
+
+!scripts/
+!scripts/__init__.py
+!scripts/generate_build_info.py
+!scripts/populate_report_fields.py
+!scripts/pytest_metadata.py
+
+# -- Environment
+
 !environment/
 !environment/README.md
 !environment/spack.yaml
 !environment/spack.lock
 
-# Project-local Spack repository
+# --  Project-local Spack repository
+
 !spack/
 !spack/repo/
 !spack/repo/repo.yaml
 !spack/repo/packages/
 !spack/repo/packages/**
-
-# Python build/cache artifacts
-__pycache__/
-*.py[cod]
-*.egg-info/
-.pytest_cache/

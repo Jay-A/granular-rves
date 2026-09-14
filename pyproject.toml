@@ -12,7 +12,9 @@ license = "MIT"
 authors = [
     { name = "Jay M. Appleton" },
 ]
-dependencies = []
+dependencies = [
+    "PyYAML>=6.0",
+]
 
 [project.optional-dependencies]
 dev = [

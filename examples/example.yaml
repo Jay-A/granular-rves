@@ -1,0 +1,24 @@
+name: example
+
+analysis:
+  type: quasi_static
+
+geometry:
+  type: cylinder
+  x0: [0.0, 0.0, 0.0]
+  x1: [0.0, 0.0, 1.0]
+  radius: 1.0
+
+mesh:
+  size: 0.25
+
+loading:
+  type: displacement
+  region: top
+  component: z
+  start: 0.0
+  end: -0.01
+  steps: 1
+
+output:
+  directory: output/example
