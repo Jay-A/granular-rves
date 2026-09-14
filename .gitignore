@@ -64,13 +64,6 @@
 !src/granular_rves/mechanics/boundary/
 !src/granular_rves/mechanics/boundary/__init__.py
 !src/granular_rves/mechanics/definitions.py
-!tests/mechanics/
-!tests/mechanics/__init__.py
-!tests/mechanics/test_definitions.py
-!tests/mechanics/kinematics/
-!tests/mechanics/kinematics/test_small_strain.py
-!tests/mechanics/constitutive/
-!tests/mechanics/constitutive/test_linear_elastic.py
 
 # -- -- Problem (src) 
 !src/granular_rves/problem/
@@ -100,14 +93,17 @@
 !src/granular_rves/io/__init__.py
 
 # -- Tests
-
-!tests/
-!tests/manual/
-!tests/manual/test_gmsh_dolfinx.py
+!dev_tests/
+!dev_tests/manual/
+!dev_tests/manual/test_gmsh_dolfinx.py
+!dev_tests/problem/
+!dev_tests/problem/geometry/
+!dev_tests/problem/geometry/test_meshing.py
 
 !tests/problem/
 !tests/problem/__init__.py
 !tests/problem/test_definition.py
+!tests/problem/test_loader.py
 
 !tests/problem/geometry/
 !tests/problem/geometry/__init__.py
@@ -121,6 +117,14 @@
 !tests/test_generate_build_info.py
 !tests/test_populate_report_fields.py
 !tests/test_pytest_metadata.py
+
+!tests/mechanics/
+!tests/mechanics/__init__.py
+!tests/mechanics/test_definitions.py
+!tests/mechanics/kinematics/
+!tests/mechanics/kinematics/test_small_strain.py
+!tests/mechanics/constitutive/
+!tests/mechanics/constitutive/test_linear_elastic.py
 
 # -- Tooling
 
