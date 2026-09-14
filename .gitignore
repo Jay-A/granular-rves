@@ -61,6 +61,10 @@
 !src/granular_rves/mechanics/damage/__init__.py
 !src/granular_rves/mechanics/boundary/
 !src/granular_rves/mechanics/boundary/__init__.py
+!src/granular_rves/mechanics/definitions.py
+!tests/mechanics/
+!tests/mechanics/__init__.py
+!tests/mechanics/test_definitions.py
 
 # -- -- Problem (src) 
 !src/granular_rves/problem/

@@ -23,8 +23,7 @@ mechanics:
       poisson_ratio: 0.3
 
   balance:
-    momentum:
-      regime: quasi_static
+    momentum: {}
 
   boundary:
     dirichlet:
