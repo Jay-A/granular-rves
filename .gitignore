@@ -16,6 +16,8 @@
 !.github/
 !.github/**
 
+.github/workflows/bkp_docs.yaml
+
 # -- Examples
 
 !examples/
@@ -140,6 +142,8 @@
 !environment/README.md
 !environment/spack.yaml
 !environment/spack.lock
+!spack-config/
+!spack-config/config.yaml 
 
 # --  Project-local Spack repository
 

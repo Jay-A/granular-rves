@@ -32,6 +32,9 @@ spack:
             fortran: /usr/bin/gfortran-16
 
   config:
-    build_jobs: 4
+    build_jobs: 2
+    install_tree:
+      root: /home/jayma/github/granular-rves/.spack/opt/spack
 
 
+    build_stage: [/home/jayma/github/granular-rves/environment/spack-stage]
