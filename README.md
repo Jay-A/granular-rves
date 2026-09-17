@@ -157,48 +157,55 @@ This separation is intended to make computational experiments reproducible while
 
 ## Installation
 
-The project uses `uv` for Python environment and package management.
+The project uses **Spack** to manage the scientific and system dependency environment, including the FEniCSx/DOLFINx, PETSc, Gmsh, OpenCASCADE, Mesa, LLVM, and related dependency stack.
 
-Development is currently performed with Python 3.12.14. Python compatibility requirements will remain intentionally lightweight while the dependency tree is developing and will be refined as the FEniCSx, PETSc, mesh-generation, visualization, and scientific Python dependencies become established.
-
-Clone the repository and synchronize the development environment:
+Clone the repository:
 
 ```bash
 git clone https://github.com/jay-a/granular-rves.git
 cd granular-rves
-
-uv sync
 ```
 
-Once the application entry point is available, experiments can be run through the managed environment:
+The repository contains the Spack environment specification under `environment/`. Configure Spack to use the repository-local installation tree and build stage, then activate the environment:
 
 ```bash
-uv run granular-rves run experiments/01_single_grain.yaml
+spack env activate environment
 ```
 
-`pyproject.toml` is the source of truth for project metadata and dependencies. `uv` manages the project environment and lockfile.
+Install the Python project and development dependencies into the active environment:
 
-## Software stack
+```bash
+python -m pip install -e ".[dev]"
+```
 
-The project is being developed around the following ecosystem:
+The active Spack environment provides the scientific software stack; the Python package installation provides the project itself and its Python development tooling.
 
-* Python
-* FEniCSx
-* DOLFINx
-* UFL
-* PETSc
-* Gmsh
-* NumPy
-* SciPy
-* PyVista
-* pytest
-* uv
-* Sphinx
-* MyST
-* PyData Sphinx Theme
-* LaTeX
+### Development and pushing
 
-The exact dependency tree will evolve as the implementation grows.
+Configure Git to use the repository-managed pre-push hook:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The tracked pre-push hook runs the project's full test suite and records the test result in `.github/status.json`. A push is permitted only when the test suite succeeds.
+
+The full test suite can also be run manually with:
+
+```bash
+python -m pytest
+```
+
+For development, run the test suite after changes and before pushing:
+
+```bash
+python -m pytest
+git push
+```
+
+The GitHub Actions workflow does not provide the primary test environment. It consumes the recorded test metadata and is responsible for generating the research report, building the documentation, and publishing the resulting GitHub Pages artifacts.
+
+The Spack environment specification and lockfile are the source of truth for the reproducible scientific software environment.
 
 ## FEniCSx and DOLFINx
 

@@ -15,6 +15,10 @@
 !.gitattributes
 !.github/
 !.github/**
+!.github/status.json
+!scripts/prepush.py
+!.githooks/
+!.githooks/pre-push 
 
 .github/workflows/bkp_docs.yaml
 

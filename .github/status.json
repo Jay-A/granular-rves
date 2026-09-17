@@ -1,0 +1,345 @@
+{
+  "commit": "760eb397ed8a6019cc96e4cbca40e634dd156e59",
+  "timestamp": "2026-09-17T00:38:20.058025+00:00",
+  "tests": {
+    "summary": {
+      "status": "passed",
+      "total": 66,
+      "passed": 66,
+      "failed": 0,
+      "skipped": 0
+    },
+    "pytest_tests": [
+      {
+        "name": "test_linear_elastic_parameters",
+        "file": "tests.mechanics.constitutive.test_linear_elastic",
+        "status": "passed"
+      },
+      {
+        "name": "test_linear_elastic_rejects_nonpositive_youngs_modulus",
+        "file": "tests.mechanics.constitutive.test_linear_elastic",
+        "status": "passed"
+      },
+      {
+        "name": "test_linear_elastic_rejects_invalid_poisson_ratio",
+        "file": "tests.mechanics.constitutive.test_linear_elastic",
+        "status": "passed"
+      },
+      {
+        "name": "test_linear_elastic_stress_expression",
+        "file": "tests.mechanics.constitutive.test_linear_elastic",
+        "status": "passed"
+      },
+      {
+        "name": "test_small_strain_accepts_empty_parameters",
+        "file": "tests.mechanics.kinematics.test_small_strain",
+        "status": "passed"
+      },
+      {
+        "name": "test_small_strain_rejects_parameters",
+        "file": "tests.mechanics.kinematics.test_small_strain",
+        "status": "passed"
+      },
+      {
+        "name": "test_small_strain",
+        "file": "tests.mechanics.kinematics.test_small_strain",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_rejects_non_string_type[KinematicsDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_rejects_non_string_type[ConstitutiveDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_rejects_non_string_type[BalanceDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_rejects_empty_type[-KinematicsDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_rejects_empty_type[-ConstitutiveDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_rejects_empty_type[-BalanceDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_rejects_empty_type[   -KinematicsDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_rejects_empty_type[   -ConstitutiveDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_rejects_empty_type[   -BalanceDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_rejects_non_mapping_parameters[KinematicsDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_rejects_non_mapping_parameters[ConstitutiveDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_rejects_non_mapping_parameters[BalanceDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_accepts_mapping[KinematicsDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_accepts_mapping[ConstitutiveDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_definition_accepts_mapping[BalanceDefinition]",
+        "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_valid_cylinder",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_rejects_invalid_x0[x00]",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_rejects_invalid_x0[x01]",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_rejects_invalid_x1[x10]",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_rejects_invalid_x1[x11]",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_rejects_non_positive_radius[0.0]",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_rejects_non_positive_radius[-1.0]",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_rejects_non_finite_radius[inf]",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_rejects_non_finite_radius[-inf]",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_rejects_non_finite_radius[nan]",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_rejects_identical_axis_points",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_rejects_non_finite_coordinates[x0]",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_rejects_non_finite_coordinates[x1]",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_accepts_non_vertical_axis",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_cylinder_is_frozen",
+        "file": "tests.problem.geometry.geometry_types.test_cylinder",
+        "status": "passed"
+      },
+      {
+        "name": "test_valid_geometry_definition",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_rejects_empty_name[]",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_rejects_empty_name[   ]",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_rejects_empty_type[]",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_rejects_empty_type[   ]",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_rejects_non_string_name[123]",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_rejects_non_string_name[None]",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_rejects_non_string_type[123]",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_rejects_non_string_type[None]",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_rejects_non_mapping_parameters[None]",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_rejects_non_mapping_parameters[parameters1]",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_rejects_non_mapping_parameters[parameters]",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_rejects_non_mapping_parameters[1]",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_definition_is_frozen",
+        "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_problem_definition",
+        "file": "tests.problem.test_definition",
+        "status": "passed"
+      },
+      {
+        "name": "test_definitions_are_immutable",
+        "file": "tests.problem.test_definition",
+        "status": "passed"
+      },
+      {
+        "name": "test_geometry_is_preserved",
+        "file": "tests.problem.test_definition",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem_accepts_string_path",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem_missing_section",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem_rejects_non_mapping",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_generate_build_info",
+        "file": "tests.test_generate_build_info",
+        "status": "passed"
+      },
+      {
+        "name": "test_generate_build_info_records_failed_and_skipped_tests",
+        "file": "tests.test_generate_build_info",
+        "status": "passed"
+      },
+      {
+        "name": "test_generate_build_info_rejects_missing_pytest_report",
+        "file": "tests.test_generate_build_info",
+        "status": "passed"
+      },
+      {
+        "name": "test_populate_report_fields",
+        "file": "tests.test_populate_report_fields",
+        "status": "passed"
+      },
+      {
+        "name": "test_populate_report_fields_does_not_modify_template",
+        "file": "tests.test_populate_report_fields",
+        "status": "passed"
+      },
+      {
+        "name": "test_read_pytest_metadata",
+        "file": "tests.test_pytest_metadata",
+        "status": "passed"
+      },
+      {
+        "name": "test_read_pytest_metadata_excludes_failures_and_skips",
+        "file": "tests.test_pytest_metadata",
+        "status": "passed"
+      },
+      {
+        "name": "test_read_pytest_metadata_missing_file",
+        "file": "tests.test_pytest_metadata",
+        "status": "passed"
+      }
+    ]
+  }
+}
