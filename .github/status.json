@@ -309,7 +309,7 @@
         "status": "passed"
       },
       {
-        "name": "test_generate_build_info_rejects_missing_pytest_report",
+        "name": "test_generate_build_info_rejects_missing_status_file",
         "file": "tests.test_generate_build_info",
         "status": "passed"
       },
