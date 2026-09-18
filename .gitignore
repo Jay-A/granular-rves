@@ -16,9 +16,9 @@
 !.github/
 !.github/**
 !.github/status.json
-!scripts/prepush.py
+!scripts/precommit.py
 !.githooks/
-!.githooks/pre-push 
+!.githooks/pre-commit
 
 .github/workflows/bkp_docs.yaml
 

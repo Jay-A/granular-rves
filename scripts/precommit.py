@@ -74,7 +74,6 @@ def main() -> int:
 
     status = {
         "commit": commit,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
         "tests": {
             "summary": {
                 "status": "passed",
