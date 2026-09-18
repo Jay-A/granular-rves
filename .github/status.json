@@ -2,8 +2,8 @@
   "tests": {
     "summary": {
       "status": "passed",
-      "total": 68,
-      "passed": 68,
+      "total": 80,
+      "passed": 80,
       "failed": 0,
       "skipped": 0
     },
@@ -116,6 +116,56 @@
       {
         "name": "test_definition_accepts_mapping[BalanceDefinition]",
         "file": "tests.mechanics.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_create_fixed_dirichlet_bcs",
+        "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_create_loading_controlled_dirichlet_bc",
+        "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_create_multiple_dirichlet_bcs",
+        "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_loading_controlled_boundary_requires_current_value",
+        "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_unknown_boundary_region_is_rejected",
+        "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_supported_displacement_components[x]",
+        "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_supported_displacement_components[y]",
+        "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_supported_displacement_components[z]",
+        "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_unknown_displacement_component_is_rejected",
+        "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_elasticity_formulation",
+        "file": "tests.numerical.test_formulation_elasticity",
         "status": "passed"
       },
       {
@@ -271,6 +321,16 @@
       {
         "name": "test_create_mesh_cylinder",
         "file": "tests.problem.geometry.test_meshing",
+        "status": "passed"
+      },
+      {
+        "name": "test_dirichlet_boundary_definition",
+        "file": "tests.problem.test_definition",
+        "status": "passed"
+      },
+      {
+        "name": "test_boundary_definition",
+        "file": "tests.problem.test_definition",
         "status": "passed"
       },
       {

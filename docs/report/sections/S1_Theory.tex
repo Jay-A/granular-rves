@@ -31,124 +31,124 @@ The current development status is:
 
 \begin{longtable}{p{0.06\textwidth}p{0.36\textwidth}p{0.32\textwidth}p{0.16\textwidth}}
 \toprule
-\textbf{ID} & \textbf{Task} & \textbf{Relevant files} & \textbf{Status} \
+\textbf{ID} & \textbf{Task} & \textbf{Relevant files} & \textbf{Status} \\
 \midrule
 \endhead
 
 1 &
 Define the 3D cylinder geometry &
 \texttt{problem/geometry/geometry_types/cylinder.py} &
-Implemented \
+Implemented \\
 
 2 &
 Generate the tetrahedral finite-element mesh and expose named physical regions &
 \texttt{problem/geometry/meshing.py},
 \texttt{problem/geometry/geometry_types/cylinder.py} &
-Implemented \
+Implemented \\
 
 3 &
 Define small-strain kinematics &
 \texttt{mechanics/kinematics/small_strain.py} &
-Implemented \
+Implemented \\
 
 4 &
 Implement isotropic linear elasticity &
 \texttt{mechanics/constitutive/linear_elastic.py} &
-Implemented \
+Implemented \\
 
 5 &
 Define the compression boundary constraints &
 \texttt{problem/definition.py},
 \texttt{problem/loader.py} &
-Implemented \
+Implemented \\
 
 6 &
 Translate problem-level Dirichlet constraints into DOLFINx boundary conditions &
 \texttt{numerical/boundary/dirichlet.py} &
-Implemented \
+Implemented \\
 
 7 &
 Construct the finite-element elasticity formulation from the mechanics models &
 \texttt{numerical/formulation/elasticity.py} &
-Implemented \
+Implemented \\
 
 8 &
 Define numerical loading increments from the problem-level loading path &
 \texttt{problem/definition.py},
 future numerical stepping layer &
-Next \
+Next \\
 
 9 &
 Solve the linear elasticity system with DOLFINx/PETSc &
 \texttt{numerical/solver/} &
-TODO \
+TODO \\
 
 10 &
 Run the complete small-strain cylinder compression problem end-to-end &
 \texttt{numerical/},
 \texttt{__main__.py} &
-TODO \
+TODO \\
 
 11 &
 Extract reaction forces and macroscopic compression response &
 \texttt{numerical/},
 \texttt{io/} &
-TODO \
+TODO \\
 
 12 &
 Write VTK-compatible simulation output &
 \texttt{io/} &
-TODO \
+TODO \\
 
 13 &
 Implement an independent analytical or semi-analytical reference solution &
 \texttt{benchmarks/01_cylinder_compression/reference.py} &
-TODO \
+TODO \\
 
 14 &
 Compare the finite-element solution with the reference solution &
 \texttt{benchmarks/01_cylinder_compression/},
 \texttt{tests/} &
-TODO \
+TODO \\
 
 15 &
 Perform a mesh-convergence study &
 \texttt{benchmarks/01_cylinder_compression/experiment.yaml},
 \texttt{tests/} &
-TODO \
+TODO \\
 
 16 &
 Implement frictionless platen/contact treatment &
 \texttt{mechanics/contact/},
 \texttt{problem/boundary/},
 future numerical contact layer &
-TODO \
+TODO \\
 
 17 &
 Add finite-strain kinematics &
 \texttt{mechanics/kinematics/finite_strain.py} &
-TODO \
+TODO \\
 
 18 &
 Implement a compressible Neo-Hookean constitutive model &
 \texttt{mechanics/constitutive/neo_hookean.py} &
-TODO \
+TODO \\
 
 19 &
 Add the nonlinear finite-strain solver &
 \texttt{numerical/} &
-TODO \
+TODO \\
 
 20 &
 Compare small-strain and finite-strain solutions &
 \texttt{benchmarks/01_cylinder_compression/} &
-TODO \
+TODO \\
 
 21 &
 Compute the relative $L^2$ strain-field error &
 \texttt{benchmarks/01_cylinder_compression/},
 \texttt{io/} &
-TODO \
+TODO \\
 
 \bottomrule
 \end{longtable}
