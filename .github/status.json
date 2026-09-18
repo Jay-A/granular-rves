@@ -2,8 +2,8 @@
   "tests": {
     "summary": {
       "status": "passed",
-      "total": 66,
-      "passed": 66,
+      "total": 68,
+      "passed": 68,
       "failed": 0,
       "skipped": 0
     },
@@ -261,6 +261,16 @@
       {
         "name": "test_geometry_definition_is_frozen",
         "file": "tests.problem.geometry.test_definitions",
+        "status": "passed"
+      },
+      {
+        "name": "test_gmsh_dolfinx_cylinder",
+        "file": "tests.problem.geometry.test_gmsh_dolfinx",
+        "status": "passed"
+      },
+      {
+        "name": "test_create_mesh_cylinder",
+        "file": "tests.problem.geometry.test_meshing",
         "status": "passed"
       },
       {
