@@ -4,8 +4,7 @@ spack:
   - py-pip
   - gmsh~med~fltk+opencascade
   - py-gmsh
-  - py-fenics-dolfinx
-
+  - py-fenics-dolfinx@0.11.0.post0+petsc4py~slepc4py
   repos:
   - ../spack/repo
 

@@ -177,3 +177,22 @@
 !spack/repo/repo.yaml
 !spack/repo/packages/
 !spack/repo/packages/**
+
+
+# -- Numerical (src)
+!src/granular_rves/numerical/integrator/
+!src/granular_rves/numerical/integrator/__init__.py
+!src/granular_rves/numerical/integrator/explicit.py
+!src/granular_rves/numerical/solver/steady.py
+
+# -- Numerical tests
+!tests/numerical/integrator/
+!tests/numerical/integrator/test_explicit.py
+!tests/numerical/solver/
+!tests/numerical/solver/test_steady.py
+
+# -- Problem tests
+!tests/problem/geometry/test_gmsh_dolfinx.py
+
+!tests/problem/test_loader.py
+!tests/problem/geometry/test_meshing.py
