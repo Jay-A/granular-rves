@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="66" time="0.859" timestamp="2026-09-18T14:52:18.893147+02:00" hostname="MSI"><testcase classname="tests.mechanics.constitutive.test_linear_elastic" name="test_linear_elastic_parameters" time="0.001" /><testcase classname="tests.mechanics.constitutive.test_linear_elastic" name="test_linear_elastic_rejects_nonpositive_youngs_modulus" time="0.000" /><testcase classname="tests.mechanics.constitutive.test_linear_elastic" name="test_linear_elastic_rejects_invalid_poisson_ratio" time="0.000" /><testcase classname="tests.mechanics.constitutive.test_linear_elastic" name="test_linear_elastic_stress_expression" time="0.004" /><testcase classname="tests.mechanics.kinematics.test_small_strain" name="test_small_strain_accepts_empty_parameters" time="0.000" /><testcase classname="tests.mechanics.kinematics.test_small_strain" name="test_small_strain_rejects_parameters" time="0.000" /><testcase classname="tests.mechanics.kinematics.test_small_strain" name="test_small_strain" time="0.003" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_rejects_non_string_type[KinematicsDefinition]" time="0.001" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_rejects_non_string_type[ConstitutiveDefinition]" time="0.000" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_rejects_non_string_type[BalanceDefinition]" time="0.000" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_rejects_empty_type[-KinematicsDefinition]" time="0.001" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_rejects_empty_type[-ConstitutiveDefinition]" time="0.000" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_rejects_empty_type[-BalanceDefinition]" time="0.001" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_rejects_empty_type[   -KinematicsDefinition]" time="0.001" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_rejects_empty_type[   -ConstitutiveDefinition]" time="0.000" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_rejects_empty_type[   -BalanceDefinition]" time="0.000" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_rejects_non_mapping_parameters[KinematicsDefinition]" time="0.000" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_rejects_non_mapping_parameters[ConstitutiveDefinition]" time="0.000" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_rejects_non_mapping_parameters[BalanceDefinition]" time="0.000" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_accepts_mapping[KinematicsDefinition]" time="0.000" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_accepts_mapping[ConstitutiveDefinition]" time="0.000" /><testcase classname="tests.mechanics.test_definitions" name="test_definition_accepts_mapping[BalanceDefinition]" time="0.000" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_valid_cylinder" time="0.001" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_rejects_invalid_x0[x00]" time="0.001" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_rejects_invalid_x0[x01]" time="0.001" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_rejects_invalid_x1[x10]" time="0.001" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_rejects_invalid_x1[x11]" time="0.001" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_rejects_non_positive_radius[0.0]" time="0.001" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_rejects_non_positive_radius[-1.0]" time="0.001" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_rejects_non_finite_radius[inf]" time="0.001" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_rejects_non_finite_radius[-inf]" time="0.001" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_rejects_non_finite_radius[nan]" time="0.000" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_rejects_identical_axis_points" time="0.001" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_rejects_non_finite_coordinates[x0]" time="0.001" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_rejects_non_finite_coordinates[x1]" time="0.001" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_accepts_non_vertical_axis" time="0.000" /><testcase classname="tests.problem.geometry.geometry_types.test_cylinder" name="test_cylinder_is_frozen" time="0.000" /><testcase classname="tests.problem.geometry.test_definitions" name="test_valid_geometry_definition" time="0.000" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_rejects_empty_name[]" time="0.001" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_rejects_empty_name[   ]" time="0.000" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_rejects_empty_type[]" time="0.000" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_rejects_empty_type[   ]" time="0.001" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_rejects_non_string_name[123]" time="0.001" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_rejects_non_string_name[None]" time="0.000" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_rejects_non_string_type[123]" time="0.000" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_rejects_non_string_type[None]" time="0.000" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_rejects_non_mapping_parameters[None]" time="0.000" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_rejects_non_mapping_parameters[parameters1]" time="0.000" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_rejects_non_mapping_parameters[parameters]" time="0.001" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_rejects_non_mapping_parameters[1]" time="0.001" /><testcase classname="tests.problem.geometry.test_definitions" name="test_geometry_definition_is_frozen" time="0.000" /><testcase classname="tests.problem.test_definition" name="test_problem_definition" time="0.000" /><testcase classname="tests.problem.test_definition" name="test_definitions_are_immutable" time="0.000" /><testcase classname="tests.problem.test_definition" name="test_geometry_is_preserved" time="0.000" /><testcase classname="tests.problem.test_loader" name="test_load_problem" time="0.006" /><testcase classname="tests.problem.test_loader" name="test_load_problem_accepts_string_path" time="0.004" /><testcase classname="tests.problem.test_loader" name="test_load_problem_missing_section" time="0.006" /><testcase classname="tests.problem.test_loader" name="test_load_problem_rejects_non_mapping" time="0.010" /><testcase classname="tests.test_generate_build_info" name="test_generate_build_info" time="0.001"><failure message="AttributeError: 'module' object at scripts.generate_build_info has no attribute 'get_source_commit'">obj = &lt;module 'scripts.generate_build_info' from '/home/jayma/github/granular-rves/scripts/generate_build_info.py'&gt;
+name = 'get_source_commit', ann = 'scripts.generate_build_info'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -&gt; object:
+        try:
+&gt;           obj = getattr(obj, name)
+                  ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'scripts.generate_build_info' has no attribute 'get_source_commit'
+
+environment/.spack-env/view/lib/python3.12/site-packages/_pytest/monkeypatch.py:95: AttributeError
+
+The above exception was the direct cause of the following exception:
+
+tmp_path = PosixPath('/tmp/pytest-of-jayma/pytest-11/test_generate_build_info0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7262100fb470&gt;
+
+    def test_generate_build_info(
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -&gt; None:
+        """Generate build metadata from pytest JUnit XML."""
+    
+&gt;       monkeypatch.setattr(
+            "scripts.generate_build_info.get_source_commit",
+            lambda: "abc1234",
+        )
+
+/mnt/c/Users/jayma/GitHub/granular-rves/tests/test_generate_build_info.py:15: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+environment/.spack-env/view/lib/python3.12/site-packages/_pytest/monkeypatch.py:109: in derive_importpath
+    annotated_getattr(target, attr, ann=module)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+obj = &lt;module 'scripts.generate_build_info' from '/home/jayma/github/granular-rves/scripts/generate_build_info.py'&gt;
+name = 'get_source_commit', ann = 'scripts.generate_build_info'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -&gt; object:
+        try:
+            obj = getattr(obj, name)
+        except AttributeError as e:
+&gt;           raise AttributeError(
+                f"{type(obj).__name__!r} object at {ann} has no attribute {name!r}"
+            ) from e
+E           AttributeError: 'module' object at scripts.generate_build_info has no attribute 'get_source_commit'
+
+environment/.spack-env/view/lib/python3.12/site-packages/_pytest/monkeypatch.py:97: AttributeError</failure></testcase><testcase classname="tests.test_generate_build_info" name="test_generate_build_info_records_failed_and_skipped_tests" time="0.001"><failure message="AttributeError: 'module' object at scripts.generate_build_info has no attribute 'get_source_commit'">obj = &lt;module 'scripts.generate_build_info' from '/home/jayma/github/granular-rves/scripts/generate_build_info.py'&gt;
+name = 'get_source_commit', ann = 'scripts.generate_build_info'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -&gt; object:
+        try:
+&gt;           obj = getattr(obj, name)
+                  ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'scripts.generate_build_info' has no attribute 'get_source_commit'
+
+environment/.spack-env/view/lib/python3.12/site-packages/_pytest/monkeypatch.py:95: AttributeError
+
+The above exception was the direct cause of the following exception:
+
+tmp_path = PosixPath('/tmp/pytest-of-jayma/pytest-11/test_generate_build_info_recor0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7262100f9f10&gt;
+
+    def test_generate_build_info_records_failed_and_skipped_tests(
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -&gt; None:
+        """Record test counts reported by pytest."""
+    
+&gt;       monkeypatch.setattr(
+            "scripts.generate_build_info.get_source_commit",
+            lambda: "abc1234",
+        )
+
+/mnt/c/Users/jayma/GitHub/granular-rves/tests/test_generate_build_info.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+environment/.spack-env/view/lib/python3.12/site-packages/_pytest/monkeypatch.py:109: in derive_importpath
+    annotated_getattr(target, attr, ann=module)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+obj = &lt;module 'scripts.generate_build_info' from '/home/jayma/github/granular-rves/scripts/generate_build_info.py'&gt;
+name = 'get_source_commit', ann = 'scripts.generate_build_info'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -&gt; object:
+        try:
+            obj = getattr(obj, name)
+        except AttributeError as e:
+&gt;           raise AttributeError(
+                f"{type(obj).__name__!r} object at {ann} has no attribute {name!r}"
+            ) from e
+E           AttributeError: 'module' object at scripts.generate_build_info has no attribute 'get_source_commit'
+
+environment/.spack-env/view/lib/python3.12/site-packages/_pytest/monkeypatch.py:97: AttributeError</failure></testcase><testcase classname="tests.test_generate_build_info" name="test_generate_build_info_rejects_missing_pytest_report" time="0.001"><failure message="AttributeError: 'module' object at scripts.generate_build_info has no attribute 'get_source_commit'">obj = &lt;module 'scripts.generate_build_info' from '/home/jayma/github/granular-rves/scripts/generate_build_info.py'&gt;
+name = 'get_source_commit', ann = 'scripts.generate_build_info'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -&gt; object:
+        try:
+&gt;           obj = getattr(obj, name)
+                  ^^^^^^^^^^^^^^^^^^
+E           AttributeError: module 'scripts.generate_build_info' has no attribute 'get_source_commit'
+
+environment/.spack-env/view/lib/python3.12/site-packages/_pytest/monkeypatch.py:95: AttributeError
+
+The above exception was the direct cause of the following exception:
+
+tmp_path = PosixPath('/tmp/pytest-of-jayma/pytest-11/test_generate_build_info_rejec0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7262100fa900&gt;
+
+    def test_generate_build_info_rejects_missing_pytest_report(
+        tmp_path: Path,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -&gt; None:
+        """Raise an error when the pytest JUnit XML report is missing."""
+    
+&gt;       monkeypatch.setattr(
+            "scripts.generate_build_info.get_source_commit",
+            lambda: "abc1234",
+        )
+
+/mnt/c/Users/jayma/GitHub/granular-rves/tests/test_generate_build_info.py:120: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+environment/.spack-env/view/lib/python3.12/site-packages/_pytest/monkeypatch.py:109: in derive_importpath
+    annotated_getattr(target, attr, ann=module)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+obj = &lt;module 'scripts.generate_build_info' from '/home/jayma/github/granular-rves/scripts/generate_build_info.py'&gt;
+name = 'get_source_commit', ann = 'scripts.generate_build_info'
+
+    def annotated_getattr(obj: object, name: str, ann: str) -&gt; object:
+        try:
+            obj = getattr(obj, name)
+        except AttributeError as e:
+&gt;           raise AttributeError(
+                f"{type(obj).__name__!r} object at {ann} has no attribute {name!r}"
+            ) from e
+E           AttributeError: 'module' object at scripts.generate_build_info has no attribute 'get_source_commit'
+
+environment/.spack-env/view/lib/python3.12/site-packages/_pytest/monkeypatch.py:97: AttributeError</failure></testcase><testcase classname="tests.test_populate_report_fields" name="test_populate_report_fields" time="0.001" /><testcase classname="tests.test_populate_report_fields" name="test_populate_report_fields_does_not_modify_template" time="0.001" /><testcase classname="tests.test_pytest_metadata" name="test_read_pytest_metadata" time="0.001" /><testcase classname="tests.test_pytest_metadata" name="test_read_pytest_metadata_excludes_failures_and_skips" time="0.001" /><testcase classname="tests.test_pytest_metadata" name="test_read_pytest_metadata_missing_file" time="0.001" /></testsuite></testsuites>
