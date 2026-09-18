@@ -24,6 +24,8 @@ from granular_rves.mechanics.definitions import (
 )
 from granular_rves.problem.definition import (
     AnalysisDefinition,
+    BoundaryDefinition,
+    DirichletBoundaryDefinition,
     LoadingDefinition,
     MeshDefinition,
     OutputDefinition,
@@ -83,7 +85,9 @@ def load_problem(path: str | Path) -> ProblemDefinition:
     return _build_problem_definition(data)
 
 
-def _build_problem_definition(data: dict[str, Any]) -> ProblemDefinition:
+def _build_problem_definition(
+    data: dict[str, Any],
+) -> ProblemDefinition:
     """Construct a problem definition from parsed YAML data.
 
     Parameters
@@ -107,6 +111,7 @@ def _build_problem_definition(data: dict[str, Any]) -> ProblemDefinition:
         geometry_data = data["geometry"]
         mesh_data = data["mesh"]
         mechanics_data = data["mechanics"]
+        boundary_data = data["boundary"]
         loading_data = data["loading"]
         output_data = data["output"]
     except KeyError as exc:
@@ -116,6 +121,7 @@ def _build_problem_definition(data: dict[str, Any]) -> ProblemDefinition:
 
     geometry = _build_geometry(geometry_data)
     mechanics = _build_mechanics(mechanics_data)
+    boundary = _build_boundary(boundary_data)
 
     return ProblemDefinition(
         name=str(data["name"]),
@@ -127,6 +133,7 @@ def _build_problem_definition(data: dict[str, Any]) -> ProblemDefinition:
             size=float(mesh_data["size"]),
         ),
         mechanics=mechanics,
+        boundary=boundary,
         loading=LoadingDefinition(
             type=str(loading_data["type"]),
             region=str(loading_data["region"]),
@@ -138,6 +145,69 @@ def _build_problem_definition(data: dict[str, Any]) -> ProblemDefinition:
         output=OutputDefinition(
             directory=str(output_data["directory"]),
         ),
+    )
+
+
+def _build_boundary(data: dict[str, Any]) -> BoundaryDefinition:
+    """Construct the configured boundary definition.
+
+    Parameters
+    ----------
+    data
+        Parsed ``boundary`` section from the YAML problem definition.
+
+    Returns
+    -------
+    BoundaryDefinition
+        Structured representation of the configured boundary constraints.
+
+    Raises
+    ------
+    ValueError
+        If the boundary definition is malformed or contains an unsupported
+        boundary-condition type.
+    """
+    try:
+        dirichlet_data = data["dirichlet"]
+    except KeyError as exc:
+        raise ValueError(
+            f"Missing required boundary section: {exc.args[0]!r}."
+        ) from exc
+
+    if not isinstance(dirichlet_data, dict):
+        raise ValueError(
+            "boundary.dirichlet must be a YAML mapping."
+        )
+
+    dirichlet: dict[str, DirichletBoundaryDefinition] = {}
+
+    for region, definition_data in dirichlet_data.items():
+        if not isinstance(definition_data, dict):
+            raise ValueError(
+                f"Dirichlet boundary definition for {region!r} "
+                "must be a YAML mapping."
+            )
+
+        try:
+            component = definition_data["component"]
+        except KeyError as exc:
+            raise ValueError(
+                f"Missing required Dirichlet field {exc.args[0]!r} "
+                f"for region {region!r}."
+            ) from exc
+
+        value = definition_data.get("value")
+        if value is not None:
+            value = float(value)
+
+        dirichlet[str(region)] = DirichletBoundaryDefinition(
+            region=str(region),
+            component=str(component),
+            value=value,
+        )
+
+    return BoundaryDefinition(
+        dirichlet=dirichlet,
     )
 
 

@@ -46,8 +46,64 @@ class MeshDefinition:
 
 
 @dataclass(frozen=True)
+class DirichletBoundaryDefinition:
+    """Definition of a prescribed-displacement boundary constraint.
+
+    Parameters
+    ----------
+    region
+        Name of the geometric boundary region on which the constraint
+        is applied.
+    component
+        Spatial displacement component constrained by the boundary
+        condition, such as ``"x"``, ``"y"``, or ``"z"``.
+    value
+        Prescribed displacement value. ``None`` indicates that the
+        current value is supplied by a loading definition during
+        numerical execution.
+
+    Notes
+    -----
+    This definition describes the physical constraint independently of
+    the numerical representation used to enforce it. In particular, it
+    does not contain DOLFINx facet indices, degrees of freedom, function
+    spaces, or boundary-condition objects.
+
+    For a loading-controlled boundary, ``value`` is ``None`` and the
+    corresponding current value is supplied by the numerical loading
+    procedure at each applicable loading step.
+    """
+
+    region: str
+    component: str
+    value: float | None
+
+
+@dataclass(frozen=True)
+class BoundaryDefinition:
+    """Definition of boundary constraints for a simulation problem.
+
+    Parameters
+    ----------
+    dirichlet
+        Prescribed-displacement boundary constraints.
+
+    Notes
+    -----
+    Only explicitly constrained boundaries are represented here.
+    Boundaries absent from ``dirichlet`` are not implicitly constrained.
+
+    Consequently, a geometric boundary such as a lateral surface can
+    remain unconstrained and therefore receive its natural boundary
+    condition from the variational formulation.
+    """
+
+    dirichlet: dict[str, DirichletBoundaryDefinition]
+
+
+@dataclass(frozen=True)
 class LoadingDefinition:
-    """Definition of a quasi-static loading path.
+    """Definition of a loading path for a simulation.
 
     Parameters
     ----------
@@ -67,9 +123,17 @@ class LoadingDefinition:
 
     Notes
     -----
-    The loading definition specifies the loading path but does not apply
-    the corresponding boundary condition. Application of the loading is
-    handled by the simulation runner and boundary-condition layer.
+    The loading definition describes the requested evolution of a
+    loading quantity over the simulation. It does not itself apply a
+    boundary condition, construct a numerical state, or perform
+    numerical stepping.
+
+    The numerical execution layer is responsible for interpreting this
+    loading path according to the selected analysis and supplying the
+    current loading value to the appropriate numerical mechanism.
+
+    Boundary constraints are represented separately by
+    :class:`BoundaryDefinition`.
     """
 
     type: str
@@ -114,6 +178,8 @@ class ProblemDefinition:
         Definition of the requested finite-element discretization.
     mechanics
         Definition of the mechanics models used by the simulation.
+    boundary
+        Definition of the prescribed boundary constraints.
     loading
         Definition of the applied loading path.
     output
@@ -127,7 +193,9 @@ class ProblemDefinition:
     consumes it to orchestrate geometry construction, mesh generation,
     mechanics, solution, and output.
 
-    The definition itself does not perform any numerical operations.
+    The definition itself does not perform any numerical operations and
+    does not depend on DOLFINx, UFL, PETSc, or a particular numerical
+    solution procedure.
     """
 
     name: str
@@ -135,7 +203,6 @@ class ProblemDefinition:
     geometry: Any
     mesh: MeshDefinition
     mechanics: MechanicsDefinition
+    boundary: BoundaryDefinition
     loading: LoadingDefinition
     output: OutputDefinition
-
-

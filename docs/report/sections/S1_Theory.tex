@@ -6,109 +6,183 @@ The implementation roadmap is listed below. Each item identifies the principal s
 
 \subsection{Implementation Roadmap}
 
-\begin{longtable}{p{0.06\textwidth} p{0.28\textwidth} p{0.48\textwidth} p{0.12\textwidth}}
-\toprule
-\textbf{ID} & \textbf{Task} & \textbf{Relevant files} & \textbf{Status} \\
-\midrule
-\endfirsthead
+\subsection{Initial Benchmark: 3D Linear Elastic Cylinder}
 
+The initial benchmark is a three-dimensional, displacement-controlled
+compression test of a linear-elastic cylinder. The benchmark is developed
+incrementally so that the physical model, numerical formulation, solution
+procedure, and validation remain separate and independently testable.
+
+The current implementation follows the modular architecture
+
+$$
+\texttt{problem}
+\;\rightarrow\;
+\texttt{mechanics}
+\;\rightarrow\;
+\texttt{numerical}
+\;\rightarrow\;
+\texttt{solver}
+\;\rightarrow\;
+\texttt{io}.
+$$
+
+The current development status is:
+
+\begin{longtable}{p{0.06\textwidth}p{0.36\textwidth}p{0.32\textwidth}p{0.16\textwidth}}
 \toprule
-\textbf{ID} & \textbf{Task} & \textbf{Relevant files} & \textbf{Status} \\
+\textbf{ID} & \textbf{Task} & \textbf{Relevant files} & \textbf{Status} \
 \midrule
 \endhead
 
 1 &
 Define the 3D cylinder geometry &
-\texttt{problem/geometry/cylinder.py} &
-Implemented \\
+\texttt{problem/geometry/geometry_types/cylinder.py} &
+Implemented \
 
 2 &
-Generate or import a tetrahedral mesh &
-\texttt{problem/geometry/cylinder.py}, \texttt{io/} &
-Implemented \\
+Generate the tetrahedral finite-element mesh and expose named physical regions &
+\texttt{problem/geometry/meshing.py},
+\texttt{problem/geometry/geometry_types/cylinder.py} &
+Implemented \
 
 3 &
 Define small-strain kinematics &
-\texttt{mechanics/kinematics/small\_strain.py} &
-Implemented \\
+\texttt{mechanics/kinematics/small_strain.py} &
+Implemented \
 
 4 &
 Implement isotropic linear elasticity &
-\texttt{mechanics/constitutive/linear\_elastic.py} &
-Implemented \\
+\texttt{mechanics/constitutive/linear_elastic.py} &
+Implemented \
 
 5 &
-Define the compression boundary conditions &
-\texttt{problem/boundary/} &
-In progress \\
+Define the compression boundary constraints &
+\texttt{problem/definition.py},
+\texttt{problem/loader.py} &
+Implemented \
 
 6 &
-Implement frictionless platen/contact treatment &
-\texttt{mechanics/contact/}, \texttt{problem/boundary/} &
-TODO \\
+Translate problem-level Dirichlet constraints into DOLFINx boundary conditions &
+\texttt{numerical/boundary/dirichlet.py} &
+Implemented \
 
 7 &
-Define and assemble the variational problem &
-\texttt{mechanics/balance/}, \texttt{numerical/} &
-TODO \\
+Construct the finite-element elasticity formulation from the mechanics models &
+\texttt{numerical/formulation/elasticity.py} &
+Implemented \
 
 8 &
-Solve the linear system with DOLFINx/PETSc &
-\texttt{numerical/} &
-TODO \\
+Define numerical loading increments from the problem-level loading path &
+\texttt{problem/definition.py},
+future numerical stepping layer &
+Next \
 
 9 &
-Extract reaction forces and macroscopic response &
-\texttt{numerical/}, \texttt{io/} &
-TODO \\
+Solve the linear elasticity system with DOLFINx/PETSc &
+\texttt{numerical/solver/} &
+TODO \
 
 10 &
-Write VTK-compatible simulation output &
-\texttt{io/} &
-TODO \\
+Run the complete small-strain cylinder compression problem end-to-end &
+\texttt{numerical/},
+\texttt{__main__.py} &
+TODO \
 
 11 &
-Implement an independent analytical or semi-analytical reference solution &
-\texttt{benchmarks/01\_cylinder\_compression/reference.py} &
-TODO \\
+Extract reaction forces and macroscopic compression response &
+\texttt{numerical/},
+\texttt{io/} &
+TODO \
 
 12 &
-Compare the finite element solution with the reference solution &
-\texttt{benchmarks/01\_cylinder\_compression/}, \texttt{tests/} &
-TODO \\
+Write VTK-compatible simulation output &
+\texttt{io/} &
+TODO \
 
 13 &
-Perform a mesh-convergence study &
-\texttt{benchmarks/01\_cylinder\_compression/experiment.yaml}, \texttt{tests/} &
-TODO \\
+Implement an independent analytical or semi-analytical reference solution &
+\texttt{benchmarks/01_cylinder_compression/reference.py} &
+TODO \
 
 14 &
-Add finite-strain kinematics &
-\texttt{mechanics/kinematics/finite\_strain.py} &
-TODO \\
+Compare the finite-element solution with the reference solution &
+\texttt{benchmarks/01_cylinder_compression/},
+\texttt{tests/} &
+TODO \
 
 15 &
-Implement a compressible Neo-Hookean constitutive model &
-\texttt{mechanics/constitutive/neo\_hookean.py} &
-TODO \\
+Perform a mesh-convergence study &
+\texttt{benchmarks/01_cylinder_compression/experiment.yaml},
+\texttt{tests/} &
+TODO \
 
 16 &
-Add the nonlinear finite-strain solver &
-\texttt{numerical/} &
-TODO \\
+Implement frictionless platen/contact treatment &
+\texttt{mechanics/contact/},
+\texttt{problem/boundary/},
+future numerical contact layer &
+TODO \
 
 17 &
-Compare small-strain and finite-strain solutions &
-\texttt{benchmarks/01\_cylinder\_compression/} &
-TODO \\
+Add finite-strain kinematics &
+\texttt{mechanics/kinematics/finite_strain.py} &
+TODO \
 
 18 &
+Implement a compressible Neo-Hookean constitutive model &
+\texttt{mechanics/constitutive/neo_hookean.py} &
+TODO \
+
+19 &
+Add the nonlinear finite-strain solver &
+\texttt{numerical/} &
+TODO \
+
+20 &
+Compare small-strain and finite-strain solutions &
+\texttt{benchmarks/01_cylinder_compression/} &
+TODO \
+
+21 &
 Compute the relative $L^2$ strain-field error &
-\texttt{benchmarks/01\_cylinder\_compression/}, \texttt{io/} &
-TODO \\
+\texttt{benchmarks/01_cylinder_compression/},
+\texttt{io/} &
+TODO \
 
 \bottomrule
 \end{longtable}
+
+The immediate milestone is to complete the small-strain linear-elastic
+solution path:
+
+$$
+\text{ProblemDefinition}
+\rightarrow
+\text{MeshData}
+\rightarrow
+\text{ElasticityFormulation}
+\rightarrow
+\text{Dirichlet BCs}
+\rightarrow
+\text{Loading increments}
+\rightarrow
+\text{Linear solver}.
+$$
+
+This first executable benchmark intentionally uses prescribed displacement
+on the top and bottom surfaces rather than explicit platen contact. The
+lateral surface remains traction-free through the natural boundary condition
+of the variational formulation. This provides a simple displacement-controlled
+compression problem against which the numerical formulation and solver can
+first be validated.
+
+Frictionless unilateral contact is therefore treated as a later numerical
+extension rather than a prerequisite for the initial benchmark.
+
+The finite-strain and contact developments are kept separate from the
+initial linear-elastic solution so that each extension can be validated
+against the already established small-strain formulation.
 
 \subsection{Initial Benchmark: 3D Linear Elastic Cylinder}
 

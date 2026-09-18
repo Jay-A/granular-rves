@@ -98,6 +98,27 @@
 !src/granular_rves/io/
 !src/granular_rves/io/__init__.py
 
+# -- -- Numerical (src)
+!src/granular_rves/numerical/
+!src/granular_rves/numerical/__init__.py
+
+!src/granular_rves/numerical/boundary/
+!src/granular_rves/numerical/boundary/__init__.py
+!src/granular_rves/numerical/boundary/dirichlet.py
+
+!src/granular_rves/numerical/formulation/
+!src/granular_rves/numerical/formulation/__init__.py
+!src/granular_rves/numerical/formulation/elasticity.py
+
+!src/granular_rves/numerical/solver/
+!src/granular_rves/numerical/solver/__init__.py
+
+# -- -- Numerical tests
+!tests/numerical/
+!tests/numerical/test_formulation_elasticity.py
+!tests/numerical/boundary/
+!tests/numerical/boundary/test_dirichlet.py
+
 # -- Tests
 !dev_tests/
 !dev_tests/manual/
