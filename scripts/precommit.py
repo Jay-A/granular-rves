@@ -73,7 +73,6 @@ def main() -> int:
     ).strip()
 
     status = {
-        "commit": commit,
         "tests": {
             "summary": {
                 "status": "passed",
