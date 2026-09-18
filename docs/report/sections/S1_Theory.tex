@@ -37,23 +37,23 @@ The current development status is:
 
 1 &
 Define the 3D cylinder geometry &
-\texttt{problem/geometry/geometry_types/cylinder.py} &
+\texttt{problem/geometry/geometry\_types/cylinder.py} &
 Implemented \\
 
 2 &
 Generate the tetrahedral finite-element mesh and expose named physical regions &
 \texttt{problem/geometry/meshing.py},
-\texttt{problem/geometry/geometry_types/cylinder.py} &
+\texttt{problem/geometry/geometry\_types/cylinder.py} &
 Implemented \\
 
 3 &
 Define small-strain kinematics &
-\texttt{mechanics/kinematics/small_strain.py} &
+\texttt{mechanics/kinematics/small\_strain.py} &
 Implemented \\
 
 4 &
 Implement isotropic linear elasticity &
-\texttt{mechanics/constitutive/linear_elastic.py} &
+\texttt{mechanics/constitutive/linear\_elastic.py} &
 Implemented \\
 
 5 &
@@ -86,7 +86,7 @@ TODO \\
 10 &
 Run the complete small-strain cylinder compression problem end-to-end &
 \texttt{numerical/},
-\texttt{__main__.py} &
+\texttt{\_\_main\_\_.py} &
 TODO \\
 
 11 &
@@ -102,18 +102,18 @@ TODO \\
 
 13 &
 Implement an independent analytical or semi-analytical reference solution &
-\texttt{benchmarks/01_cylinder_compression/reference.py} &
+\texttt{benchmarks/01\_cylinder\_compression/reference.py} &
 TODO \\
 
 14 &
 Compare the finite-element solution with the reference solution &
-\texttt{benchmarks/01_cylinder_compression/},
+\texttt{benchmarks/01\_cylinder\_compression/},
 \texttt{tests/} &
 TODO \\
 
 15 &
 Perform a mesh-convergence study &
-\texttt{benchmarks/01_cylinder_compression/experiment.yaml},
+\texttt{benchmarks/01\_cylinder\_compression/experiment.yaml},
 \texttt{tests/} &
 TODO \\
 
@@ -126,12 +126,12 @@ TODO \\
 
 17 &
 Add finite-strain kinematics &
-\texttt{mechanics/kinematics/finite_strain.py} &
+\texttt{mechanics/kinematics/finite\_strain.py} &
 TODO \\
 
 18 &
 Implement a compressible Neo-Hookean constitutive model &
-\texttt{mechanics/constitutive/neo_hookean.py} &
+\texttt{mechanics/constitutive/neo\_hookean.py} &
 TODO \\
 
 19 &
@@ -141,12 +141,12 @@ TODO \\
 
 20 &
 Compare small-strain and finite-strain solutions &
-\texttt{benchmarks/01_cylinder_compression/} &
+\texttt{benchmarks/01\_cylinder\_compression/} &
 TODO \\
 
 21 &
 Compute the relative $L^2$ strain-field error &
-\texttt{benchmarks/01_cylinder_compression/},
+\texttt{benchmarks/01\_cylinder\_compression/},
 \texttt{io/} &
 TODO \\
 
