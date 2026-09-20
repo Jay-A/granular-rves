@@ -22,9 +22,17 @@ $$
 \;\rightarrow\;
 \texttt{numerical}
 \;\rightarrow\;
-\texttt{solver}
-\;\rightarrow\;
 \texttt{io}.
+$$
+
+Within the numerical layer, the current steady-state solution path is
+
+$$
+\texttt{formulation}
+\;\rightarrow\;
+\texttt{boundary}
+\;\rightarrow\;
+\texttt{solver}.
 $$
 
 The current development status is:
@@ -57,9 +65,10 @@ Implement isotropic linear elasticity &
 Implemented \\
 
 5 &
-Define the compression boundary constraints &
+Define the compression boundary constraints and rigid-body constraints &
 \texttt{problem/definition.py},
-\texttt{problem/loader.py} &
+\texttt{problem/loader.py},
+\texttt{mechanics/rigid\_body.py} &
 Implemented \\
 
 6 &
@@ -73,78 +82,84 @@ Construct the finite-element elasticity formulation from the mechanics models &
 Implemented \\
 
 8 &
-Define numerical loading increments from the problem-level loading path &
-\texttt{problem/definition.py},
-future numerical stepping layer &
-Next \\
+Construct the reference measure and rigid-body constraint functionals &
+\texttt{numerical/boundary/reference.py},
+\texttt{numerical/formulation/rigid\_body.py} &
+Implemented \\
 
 9 &
-Solve the linear elasticity system with DOLFINx/PETSc &
-\texttt{numerical/solver/} &
-TODO \\
+Solve the steady linear-elasticity system with DOLFINx/PETSc &
+\texttt{numerical/solver/steady.py} &
+Implemented \\
 
 10 &
 Run the complete small-strain cylinder compression problem end-to-end &
 \texttt{numerical/},
-\texttt{\_\_main\_\_.py} &
-TODO \\
+\texttt{\_\_main\_\_.py},
+\texttt{tests/integration/} &
+Implemented \\
 
 11 &
+Provide command-line diagnostic reporting for the application execution path &
+\texttt{\_\_main\_\_.py} &
+Implemented \\
+
+12 &
 Extract reaction forces and macroscopic compression response &
 \texttt{numerical/},
 \texttt{io/} &
 TODO \\
 
-12 &
+13 &
 Write VTK-compatible simulation output &
 \texttt{io/} &
 TODO \\
 
-13 &
+14 &
 Implement an independent analytical or semi-analytical reference solution &
 \texttt{benchmarks/01\_cylinder\_compression/reference.py} &
 TODO \\
 
-14 &
+15 &
 Compare the finite-element solution with the reference solution &
 \texttt{benchmarks/01\_cylinder\_compression/},
 \texttt{tests/} &
 TODO \\
 
-15 &
+16 &
 Perform a mesh-convergence study &
 \texttt{benchmarks/01\_cylinder\_compression/experiment.yaml},
 \texttt{tests/} &
 TODO \\
 
-16 &
+17 &
 Implement frictionless platen/contact treatment &
 \texttt{mechanics/contact/},
-\texttt{problem/boundary/},
+\texttt{problem/},
 future numerical contact layer &
 TODO \\
 
-17 &
+18 &
 Add finite-strain kinematics &
 \texttt{mechanics/kinematics/finite\_strain.py} &
 TODO \\
 
-18 &
+19 &
 Implement a compressible Neo-Hookean constitutive model &
 \texttt{mechanics/constitutive/neo\_hookean.py} &
 TODO \\
 
-19 &
+20 &
 Add the nonlinear finite-strain solver &
 \texttt{numerical/} &
 TODO \\
 
-20 &
+21 &
 Compare small-strain and finite-strain solutions &
 \texttt{benchmarks/01\_cylinder\_compression/} &
 TODO \\
 
-21 &
+22 &
 Compute the relative $L^2$ strain-field error &
 \texttt{benchmarks/01\_cylinder\_compression/},
 \texttt{io/} &
@@ -153,11 +168,14 @@ TODO \\
 \bottomrule
 \end{longtable}
 
-The immediate milestone is to complete the small-strain linear-elastic
-solution path:
+The immediate milestone is now to validate the completed small-strain
+linear-elastic solution path against independent physical and numerical
+checks. The implemented computational path is
 
 $$
 \text{ProblemDefinition}
+\rightarrow
+\text{GeometryDefinition}
 \rightarrow
 \text{MeshData}
 \rightarrow
@@ -165,43 +183,16 @@ $$
 \rightarrow
 \text{Dirichlet BCs}
 \rightarrow
-\text{Loading increments}
+\text{Rigid-body constraints}
 \rightarrow
-\text{Linear solver}.
+\text{SteadySolver}.
 $$
 
-This first executable benchmark intentionally uses prescribed displacement
-on the top and bottom surfaces rather than explicit platen contact. The
-lateral surface remains traction-free through the natural boundary condition
-of the variational formulation. This provides a simple displacement-controlled
-compression problem against which the numerical formulation and solver can
-first be validated.
-
-Frictionless unilateral contact is therefore treated as a later numerical
-extension rather than a prerequisite for the initial benchmark.
-
-The finite-strain and contact developments are kept separate from the
-initial linear-elastic solution so that each extension can be validated
-against the already established small-strain formulation.
-
-\subsection{Initial Benchmark: 3D Linear Elastic Cylinder}
-
-The first benchmark will solve the fully three-dimensional finite element problem for a cylindrical elastic body subjected to displacement-controlled compression between frictionless rigid platens. The finite element implementation will not use an axisymmetric formulation. Instead, the axisymmetric solution will serve as an independent reference against which the three-dimensional calculation can be verified.
-
-The initial material model will be isotropic, small-strain linear elasticity, parameterized by Young's modulus $E$ and Poisson's ratio $\nu$. The corresponding kinematic, constitutive, and equilibrium relations will be implemented using the mechanics modules identified in the roadmap above.
-
-The benchmark will initially focus on:
-
-\begin{itemize}
-\item three-dimensional geometry;
-\item small-strain kinematics;
-\item isotropic linear elasticity;
-\item displacement-controlled compression;
-\item frictionless interaction with the rigid platens;
-\item reaction-force extraction;
-\item VTK-compatible output; and
-\item comparison against an independent analytical or semi-analytical reference.
-\end{itemize}
+The current implementation has therefore completed the basic
+end-to-end solution stage. The next development stages are to expose
+the computed response, write simulation output, and establish independent
+analytical and mesh-convergence validation before extending the model to
+contact and finite-strain mechanics.
 
 The purpose of this problem is not to represent granular mechanics yet. It is a controlled computational mechanics problem that allows the basic FEniCSx implementation, boundary treatment, solver configuration, output, and verification workflow to be established before introducing multiple grains, evolving contact networks, periodicity, and realistic grain geometries.
 
