@@ -1,13 +1,19 @@
-"""Construction of numerical Dirichlet boundary conditions."""
+"""Construction of numerical Dirichlet boundary conditions.
+
+This module translates problem-level Dirichlet boundary definitions into
+DOLFINx boundary-condition objects. It resolves named problem boundaries
+through the generic boundary registry and the physical groups produced by
+the mesh-generation layer.
+"""
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from typing import Any
 
 from dolfinx import default_scalar_type, fem
 
-from granular_rves.problem.definition import BoundaryDefinition
+from granular_rves.problem.definition import BoundaryConditionDefinition
 
 
 _COMPONENT_INDICES = {
@@ -20,29 +26,29 @@ _COMPONENT_INDICES = {
 def create_dirichlet_bcs(
     mesh_data: Any,
     function_space: fem.FunctionSpace,
-    boundary: BoundaryDefinition,
+    boundary: BoundaryConditionDefinition,
     values: Mapping[str, float] | None = None,
 ) -> list[Any]:
     """Create DOLFINx Dirichlet boundary conditions.
 
-    Problem-level Dirichlet boundary definitions identify named geometric
-    regions and constrained displacement components. This function translates
-    those definitions into DOLFINx boundary-condition objects using the
-    physical groups and facet tags stored in ``mesh_data``.
+    Problem-level Dirichlet definitions identify named problem boundaries
+    and displacement components. The named problem boundaries are resolved
+    through the generic boundary registry to geometry faces, which are then
+    resolved through the mesh physical groups and facet tags.
 
     Parameters
     ----------
     mesh_data
-        DOLFINx ``MeshData`` returned by the mesh-generation layer. It must
-        provide ``mesh``, ``facet_tags``, and ``physical_groups``.
+        DOLFINx ``MeshData`` returned by the mesh-generation layer. It
+        must provide ``mesh``, ``facet_tags``, and ``physical_groups``.
     function_space
         Vector-valued DOLFINx function space on ``mesh_data.mesh``.
     boundary
-        Problem-level Dirichlet boundary definitions.
+        Problem-level boundary and Dirichlet-condition definitions.
     values
-        Current values for loading-controlled constraints. The keys are
-        boundary region names. A value is required only for constraints whose
-        definition has ``value=None``.
+        Current values for loading-controlled constraints. Keys are
+        problem boundary names. A value is required only when the
+        corresponding Dirichlet definition has ``value=None``.
 
     Returns
     -------
@@ -52,9 +58,10 @@ def create_dirichlet_bcs(
     Raises
     ------
     ValueError
-        If a boundary region does not exist in the mesh, a boundary component
-        is invalid for the mesh dimension, or a loading-controlled boundary
-        has no current value.
+        If a referenced problem boundary or geometry face is missing,
+        a physical group has the wrong dimension, a displacement
+        component is invalid, a loading-controlled value is missing,
+        or no facets are associated with a boundary.
     """
     if values is None:
         values = {}
@@ -65,20 +72,34 @@ def create_dirichlet_bcs(
 
     bcs: list[Any] = []
 
-    for region, definition in boundary.dirichlet.items():
+    for boundary_name, definition in boundary.dirichlet.items():
         try:
-            physical_group = physical_groups[region]
+            problem_boundary = boundary.boundaries[boundary_name]
         except KeyError as exc:
             raise ValueError(
-                f"Dirichlet boundary region {region!r} is not present "
+                f"Dirichlet boundary {boundary_name!r} is not declared "
+                "in the problem boundary registry."
+            ) from exc
+
+        geometry_face = problem_boundary.face
+
+        try:
+            physical_group = physical_groups[geometry_face]
+        except KeyError as exc:
+            raise ValueError(
+                f"Geometry face {geometry_face!r}, associated with "
+                f"Dirichlet boundary {boundary_name!r}, is not present "
                 "in the mesh physical groups."
             ) from exc
 
-        if physical_group.dim != mesh.topology.dim - 1:
+        expected_dimension = mesh.topology.dim - 1
+
+        if physical_group.dim != expected_dimension:
             raise ValueError(
-                f"Dirichlet boundary region {region!r} has geometric "
+                f"Geometry face {geometry_face!r}, associated with "
+                f"Dirichlet boundary {boundary_name!r}, has geometric "
                 f"dimension {physical_group.dim}, but boundary facets "
-                f"have dimension {mesh.topology.dim - 1}."
+                f"have dimension {expected_dimension}."
             )
 
         try:
@@ -86,23 +107,25 @@ def create_dirichlet_bcs(
         except KeyError as exc:
             raise ValueError(
                 f"Unknown displacement component "
-                f"{definition.component!r}. Expected one of "
+                f"{definition.component!r} for Dirichlet boundary "
+                f"{boundary_name!r}. Expected one of "
                 f"{tuple(_COMPONENT_INDICES)}."
             ) from exc
 
         if component >= mesh.geometry.dim:
             raise ValueError(
-                f"Displacement component {definition.component!r} is not "
-                f"available on a {mesh.geometry.dim}D mesh."
+                f"Displacement component {definition.component!r} is "
+                f"not available on a {mesh.geometry.dim}D mesh."
             )
 
         if definition.value is None:
             try:
-                value = values[region]
+                value = values[boundary_name]
             except KeyError as exc:
                 raise ValueError(
-                    f"No current value was supplied for loading-controlled "
-                    f"Dirichlet boundary {region!r}."
+                    "No current value was supplied for "
+                    f"loading-controlled Dirichlet boundary "
+                    f"{boundary_name!r}."
                 ) from exc
         else:
             value = definition.value
@@ -111,7 +134,9 @@ def create_dirichlet_bcs(
 
         if facets.size == 0:
             raise ValueError(
-                f"Dirichlet boundary region {region!r} has no tagged facets."
+                f"Geometry face {geometry_face!r}, associated with "
+                f"Dirichlet boundary {boundary_name!r}, has no tagged "
+                "facets."
             )
 
         subspace = function_space.sub(component)
@@ -136,3 +161,5 @@ def create_dirichlet_bcs(
         )
 
     return bcs
+
+

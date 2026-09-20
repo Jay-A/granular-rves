@@ -1,7 +1,7 @@
 name: example
 
 analysis:
-  type: quasi_static
+  type: steady
 
 geometry:
   type: cylinder
@@ -13,7 +13,6 @@ mesh:
   size: 0.25
 
 mechanics:
-
   kinematics:
     small_strain: {}
 
@@ -25,21 +24,34 @@ mechanics:
   balance:
     momentum: {}
 
-  boundary:
-    dirichlet:
-      bottom:
-        component: z
-        value: 0.0
-      top:
-        component: z
+boundary:
+  bottom:
+    face: bottom
+
+  top:
+    face: top
+
+  lateral:
+    face: lateral
+
+  dirichlet:
+    bottom:
+      component: z
+      value: 0.0
+
+    top:
+      component: z
+
+constraints:
+  reference_boundary: bottom
 
 loading:
   type: displacement
-  region: top
+  boundary: top
   component: z
-  start: 0.0
-  end: -0.01
-  steps: 10
+  value: -0.01
 
 output:
   directory: output/example
+
+

@@ -1,85 +1,201 @@
 """Declarative definitions of simulation problems.
 
-This module contains the data structures used to represent a complete
-granular-rves problem definition independently of the numerical backend.
+This module contains the problem-level data structures used to describe
+a simulation independently of numerical discretization and solver
+implementation.
 
-The definitions in this module describe what problem the user has specified.
-They do not perform meshing, finite-element assembly, constraint enforcement,
-or solution.
+The definitions in this module describe what problem is being solved.
+They do not construct meshes, UFL forms, boundary measures, PETSc
+objects, or numerical solvers.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Mapping
 
-from granular_rves.mechanics.definitions import MechanicsDefinition
-from granular_rves.mechanics.rigid_body import (
-    ReferenceFace,
-    RigidBodyConstraintMode,
-)
+from granular_rves.mechanics.rigid_body import RigidBodyConstraintMode
 
 
 @dataclass(frozen=True)
-class AnalysisDefinition:
-    """Definition of the simulation analysis.
+class GeometryDefinition:
+    """Definition of the problem geometry.
 
     Parameters
     ----------
     type
-        Analysis regime requested by the problem definition. The value is
-        interpreted by the numerical orchestration layer.
+        Geometry type identifier.
+    parameters
+        Geometry-specific parameters.
     """
 
     type: str
+    parameters: Mapping[str, Any]
 
 
 @dataclass(frozen=True)
 class MeshDefinition:
-    """Definition of the finite-element mesh.
+    """Definition of the mesh settings.
 
     Parameters
     ----------
     size
-        Target characteristic mesh size used during mesh generation.
+        Characteristic mesh size.
+    order
+        Polynomial order of the finite-element approximation.
     """
 
     size: float
+    order: int = 1
 
 
 @dataclass(frozen=True)
-class DirichletBoundaryDefinition:
-    """Definition of a prescribed-displacement boundary constraint.
+class KinematicsDefinition:
+    """Definition of the kinematic model.
 
     Parameters
     ----------
-    region
-        Name of the physical boundary region to which the constraint applies.
-    component
-        Displacement component being constrained. Expected values are
-        ``"x"``, ``"y"``, or ``"z"``.
-    value
-        Prescribed displacement value. ``None`` indicates that the value is
-        supplied by the loading definition during execution.
+    models
+        Mapping of kinematic model names to their configuration.
     """
 
-    region: str
-    component: str
-    value: float | None
+    models: Mapping[str, Mapping[str, Any]]
+
+
+@dataclass(frozen=True)
+class ConstitutiveDefinition:
+    """Definition of the constitutive model.
+
+    Parameters
+    ----------
+    models
+        Mapping of constitutive model names to their configuration.
+    """
+
+    models: Mapping[str, Mapping[str, Any]]
+
+
+@dataclass(frozen=True)
+class BalanceDefinition:
+    """Definition of the balance laws.
+
+    Parameters
+    ----------
+    models
+        Mapping of balance-law names to their configuration.
+    """
+
+    models: Mapping[str, Mapping[str, Any]]
+
+
+@dataclass(frozen=True)
+class MechanicsDefinition:
+    """Definition of the mechanics models.
+
+    Parameters
+    ----------
+    kinematics
+        Kinematic model definitions.
+    constitutive
+        Constitutive model definitions.
+    balance
+        Balance-law definitions.
+    """
+
+    kinematics: KinematicsDefinition
+    constitutive: ConstitutiveDefinition
+    balance: BalanceDefinition
 
 
 @dataclass(frozen=True)
 class BoundaryDefinition:
-    """Definition of boundary constraints for a simulation problem.
+    """Definition of a problem-level boundary.
+
+    A problem boundary associates a named physical boundary with a
+    geometry face. The association is declarative and does not resolve
+    the geometry face to mesh entities.
 
     Parameters
     ----------
-    dirichlet
-        Mapping from boundary-region names to prescribed-displacement
-        definitions.
+    face
+        Name of the geometry face associated with this problem boundary.
     """
 
-    dirichlet: dict[str, DirichletBoundaryDefinition]
+    face: str
+
+
+@dataclass(frozen=True)
+class DirichletBoundaryDefinition:
+    """Definition of a Dirichlet condition on a problem boundary.
+
+    Parameters
+    ----------
+    component
+        Displacement component constrained by the Dirichlet condition.
+    value
+        Prescribed value, when applicable. A value of ``None`` indicates
+        that the current value is supplied separately by the loading
+        configuration.
+    """
+
+    component: str
+    value: float | None = None
+
+
+@dataclass(frozen=True)
+class BoundaryConditionDefinition:
+    """Collection of problem boundaries and boundary conditions.
+
+    Parameters
+    ----------
+    boundaries
+        Mapping from problem boundary names to their geometry-face
+        associations.
+    dirichlet
+        Mapping from problem boundary names to Dirichlet conditions.
+    """
+
+    boundaries: Mapping[str, BoundaryDefinition] = field(
+        default_factory=dict
+    )
+    dirichlet: Mapping[str, DirichletBoundaryDefinition] = field(
+        default_factory=dict
+    )
+
+
+@dataclass(frozen=True)
+class LoadingDefinition:
+    """Definition of the applied loading.
+
+    Parameters
+    ----------
+    type
+        Loading type identifier.
+    boundary
+        Name of the problem boundary on which the loading is applied.
+    component
+        Component affected by the loading.
+    value
+        Applied loading value.
+    """
+
+    type: str
+    boundary: str
+    component: str
+    value: float
+
+
+@dataclass(frozen=True)
+class OutputDefinition:
+    """Definition of simulation output.
+
+    Parameters
+    ----------
+    directory
+        Output directory.
+    """
+
+    directory: str
 
 
 @dataclass(frozen=True)
@@ -88,10 +204,10 @@ class RigidBodyConstraintDefinition:
 
     Parameters
     ----------
-    reference_face
-        Coordinate-aligned reference face on which global rigid-body
-        reference functionals are evaluated. This does not impose a
-        physical displacement constraint on the face.
+    reference_boundary
+        Name of the problem boundary used as the global reference
+        region for rigid-body constraint functionals. This refers to a
+        problem boundary, not directly to a geometry face.
     translation_x
         Constraint mode for rigid translation along the global x axis.
     translation_y
@@ -113,8 +229,7 @@ class RigidBodyConstraintDefinition:
     ``constraints`` section entirely.
     """
 
-    reference_face: ReferenceFace | None = None
-
+    reference_boundary: str | None = None
     translation_x: RigidBodyConstraintMode = (
         RigidBodyConstraintMode.UNCONSTRAINED
     )
@@ -136,86 +251,41 @@ class RigidBodyConstraintDefinition:
 
 
 @dataclass(frozen=True)
-class LoadingDefinition:
-    """Definition of a loading path for a simulation.
-
-    Parameters
-    ----------
-    type
-        Type of loading applied to the problem.
-    region
-        Name of the physical region to which the loading applies.
-    component
-        Displacement component being loaded. Expected values are
-        ``"x"``, ``"y"``, or ``"z"``.
-    start
-        Initial value of the loading parameter.
-    end
-        Final value of the loading parameter.
-    steps
-        Number of loading steps.
-    """
-
-    type: str
-    region: str
-    component: str
-    start: float
-    end: float
-    steps: int
-
-
-@dataclass(frozen=True)
-class OutputDefinition:
-    """Definition of simulation output.
-
-    Parameters
-    ----------
-    directory
-        Directory in which simulation output is written.
-    """
-
-    directory: str
-
-
-@dataclass(frozen=True)
 class ProblemDefinition:
-    """Complete declarative definition of a granular-rves problem.
+    """Complete declarative definition of a simulation problem.
 
     Parameters
     ----------
     name
-        Name identifying the problem.
+        Problem name.
     analysis
-        Analysis regime for the simulation.
+        Analysis type identifier.
     geometry
-        Declarative geometry definition.
+        Geometry definition.
     mesh
-        Finite-element mesh definition.
+        Mesh definition.
     mechanics
         Mechanics model definitions.
     boundary
-        Physical boundary constraints.
-    loading
-        Loading definition for the problem.
-    output
-        Output configuration.
+        Problem boundary and boundary-condition definitions.
     constraints
-        Optional reference constraints on rigid-body modes. If omitted,
-        all rigid-body modes are unconstrained. The reference face identifies
-        the coordinate-aligned face on which global rigid-body reference
-        functionals are evaluated; it does not impose a physical displacement
-        constraint on that face.
+        Rigid-body constraint definitions.
+    loading
+        Loading definition.
+    output
+        Output definition.
     """
 
     name: str
-    analysis: AnalysisDefinition
-    geometry: Any
+    analysis: str
+    geometry: GeometryDefinition
     mesh: MeshDefinition
     mechanics: MechanicsDefinition
-    boundary: BoundaryDefinition
-    loading: LoadingDefinition
-    output: OutputDefinition
+    boundary: BoundaryConditionDefinition
     constraints: RigidBodyConstraintDefinition = field(
         default_factory=RigidBodyConstraintDefinition
     )
+    loading: LoadingDefinition | None = None
+    output: OutputDefinition | None = None
+
 

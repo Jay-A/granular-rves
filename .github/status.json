@@ -2,8 +2,8 @@
   "tests": {
     "summary": {
       "status": "passed",
-      "total": 88,
-      "passed": 88,
+      "total": 110,
+      "passed": 110,
       "failed": 0,
       "skipped": 0
     },
@@ -119,6 +119,16 @@
         "status": "passed"
       },
       {
+        "name": "test_rigid_body_constraint_modes",
+        "file": "tests.mechanics.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_rigid_body_constraint_mode_rejects_invalid_value",
+        "file": "tests.mechanics.test_rigid_body",
+        "status": "passed"
+      },
+      {
         "name": "test_create_fixed_dirichlet_bcs",
         "file": "tests.numerical.boundary.test_dirichlet",
         "status": "passed"
@@ -161,6 +171,71 @@
       {
         "name": "test_unknown_displacement_component_is_rejected",
         "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_translation_x_returns_form",
+        "file": "tests.numerical.formulation.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_translation_y_returns_form",
+        "file": "tests.numerical.formulation.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_translation_z_returns_form",
+        "file": "tests.numerical.formulation.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_rotation_x_returns_form",
+        "file": "tests.numerical.formulation.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_rotation_y_returns_form",
+        "file": "tests.numerical.formulation.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_rotation_z_returns_form",
+        "file": "tests.numerical.formulation.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_constraints_select_mean_zero_modes",
+        "file": "tests.numerical.formulation.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_constraints_ignore_unconstrained_modes",
+        "file": "tests.numerical.formulation.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_constraints_ignore_zero_modes",
+        "file": "tests.numerical.formulation.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_translation_x_uses_x_displacement_component",
+        "file": "tests.numerical.formulation.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_translation_y_uses_y_displacement_component",
+        "file": "tests.numerical.formulation.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_translation_z_uses_z_displacement_component",
+        "file": "tests.numerical.formulation.test_rigid_body",
+        "status": "passed"
+      },
+      {
+        "name": "test_rotation_z_has_expected_coordinate_structure",
+        "file": "tests.numerical.formulation.test_rigid_body",
         "status": "passed"
       },
       {
@@ -389,6 +464,21 @@
         "status": "passed"
       },
       {
+        "name": "test_rigid_body_constraint_definition_defaults",
+        "file": "tests.problem.test_definition",
+        "status": "passed"
+      },
+      {
+        "name": "test_rigid_body_constraint_definition_preserves_configuration",
+        "file": "tests.problem.test_definition",
+        "status": "passed"
+      },
+      {
+        "name": "test_problem_definition_defaults_rigid_body_constraints",
+        "file": "tests.problem.test_definition",
+        "status": "passed"
+      },
+      {
         "name": "test_load_problem",
         "file": "tests.problem.test_loader",
         "status": "passed"
@@ -405,6 +495,26 @@
       },
       {
         "name": "test_load_problem_rejects_non_mapping",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem_defaults_rigid_body_constraints",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem_rigid_body_constraints",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem_rejects_invalid_rigid_body_constraint",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem_rejects_invalid_reference_face",
         "file": "tests.problem.test_loader",
         "status": "passed"
       },

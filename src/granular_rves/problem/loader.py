@@ -16,31 +16,22 @@ from typing import Any
 
 import yaml
 
-from granular_rves.mechanics.definitions import (
-    BalanceDefinition,
-    ConstitutiveDefinition,
-    KinematicsDefinition,
-    MechanicsDefinition,
-)
-from granular_rves.mechanics.rigid_body import (
-    ReferenceFace,
-    RigidBodyConstraintMode,
-)
+from granular_rves.mechanics.rigid_body import RigidBodyConstraintMode
 from granular_rves.problem.definition import (
-    AnalysisDefinition,
+    BalanceDefinition,
+    BoundaryConditionDefinition,
     BoundaryDefinition,
+    ConstitutiveDefinition,
     DirichletBoundaryDefinition,
+    GeometryDefinition,
+    KinematicsDefinition,
     LoadingDefinition,
+    MechanicsDefinition,
     MeshDefinition,
     OutputDefinition,
     ProblemDefinition,
     RigidBodyConstraintDefinition,
 )
-from granular_rves.mechanics.rigid_body import (
-    ReferenceFace,
-    RigidBodyConstraintMode,
-)
-from granular_rves.problem.geometry.geometry_types.cylinder import Cylinder
 
 
 def load_problem(path: str | Path) -> ProblemDefinition:
@@ -78,10 +69,9 @@ def load_problem(path: str | Path) -> ProblemDefinition:
 
     Notes
     -----
-    The loader constructs configuration and geometry objects but does not
-    perform any numerical operations. Geometry construction, mesh
-    generation, and simulation execution are handled by downstream
-    components.
+    The loader constructs declarative problem-definition objects only.
+    Geometry construction, mesh generation, numerical assembly, and
+    simulation execution are handled by downstream components.
     """
     path = Path(path)
 
@@ -112,51 +102,139 @@ def _build_problem_definition(
     Raises
     ------
     ValueError
-        If a required section is missing or contains an unsupported
-        configuration.
+        If a required section is missing, contains an unsupported
+        configuration, or contains a reference to an undeclared
+        problem boundary.
     """
-    try:
-        analysis_data = data["analysis"]
-        geometry_data = data["geometry"]
-        mesh_data = data["mesh"]
-        mechanics_data = data["mechanics"]
-        boundary_data = data["boundary"]
-        loading_data = data["loading"]
-        output_data = data["output"]
-    except KeyError as exc:
-        raise ValueError(
-            f"Missing required problem section: {exc.args[0]!r}."
-        ) from exc
+    required_sections = (
+        "name",
+        "analysis",
+        "geometry",
+        "mesh",
+        "mechanics",
+        "boundary",
+        "loading",
+        "output",
+    )
+
+    for section in required_sections:
+        if section not in data:
+            raise ValueError(
+                f"Missing required problem section: {section!r}."
+            )
+
+    analysis_data = data["analysis"]
+    geometry_data = data["geometry"]
+    mesh_data = data["mesh"]
+    mechanics_data = data["mechanics"]
+    boundary_data = data["boundary"]
+    loading_data = data["loading"]
+    output_data = data["output"]
+
+    if not isinstance(analysis_data, dict):
+        raise ValueError("analysis must be a YAML mapping.")
+
+    if not isinstance(mesh_data, dict):
+        raise ValueError("mesh must be a YAML mapping.")
+
+    if not isinstance(mechanics_data, dict):
+        raise ValueError("mechanics must be a YAML mapping.")
 
     geometry = _build_geometry(geometry_data)
     mechanics = _build_mechanics(mechanics_data)
     boundary = _build_boundary(boundary_data)
     constraints = _build_constraints(data.get("constraints"))
+    loading = _build_loading(loading_data)
+
+    _validate_boundary_references(
+        boundary=boundary,
+        constraints=constraints,
+        loading=loading,
+    )
+
+    if not isinstance(output_data, dict):
+        raise ValueError("output must be a YAML mapping.")
+
+    try:
+        output_directory = output_data["directory"]
+    except KeyError as exc:
+        raise ValueError(
+            f"Missing required output field: {exc.args[0]!r}."
+        ) from exc
+
+    try:
+        analysis_type = analysis_data["type"]
+    except KeyError as exc:
+        raise ValueError(
+            f"Missing required analysis field: {exc.args[0]!r}."
+        ) from exc
+
+    try:
+        mesh_size = mesh_data["size"]
+    except KeyError as exc:
+        raise ValueError(
+            f"Missing required mesh field: {exc.args[0]!r}."
+        ) from exc
 
     return ProblemDefinition(
         name=str(data["name"]),
-        analysis=AnalysisDefinition(
-            type=str(analysis_data["type"]),
-        ),
+        analysis=str(analysis_type),
         geometry=geometry,
         mesh=MeshDefinition(
-            size=float(mesh_data["size"]),
+            size=float(mesh_size),
+            order=int(mesh_data.get("order", 1)),
         ),
         mechanics=mechanics,
         boundary=boundary,
-        loading=LoadingDefinition(
-            type=str(loading_data["type"]),
-            region=str(loading_data["region"]),
-            component=str(loading_data["component"]),
-            start=float(loading_data["start"]),
-            end=float(loading_data["end"]),
-            steps=int(loading_data["steps"]),
-        ),
-        output=OutputDefinition(
-            directory=str(output_data["directory"]),
-        ),
         constraints=constraints,
+        loading=loading,
+        output=OutputDefinition(
+            directory=str(output_directory),
+        ),
     )
+
+
+def _validate_boundary_references(
+    boundary: BoundaryConditionDefinition,
+    constraints: RigidBodyConstraintDefinition,
+    loading: LoadingDefinition,
+) -> None:
+    """Validate problem-level references to declared boundaries.
+
+    Parameters
+    ----------
+    boundary
+        Problem boundary registry.
+    constraints
+        Rigid-body constraint definition.
+    loading
+        Loading definition.
+
+    Raises
+    ------
+    ValueError
+        If ``constraints.reference_boundary`` or ``loading.boundary``
+        refers to a problem boundary that is not declared.
+    """
+    declared_boundaries = boundary.boundaries
+
+    reference_boundary = constraints.reference_boundary
+
+    if (
+        reference_boundary is not None
+        and reference_boundary not in declared_boundaries
+    ):
+        raise ValueError(
+            "constraints.reference_boundary "
+            f"{reference_boundary!r} is not declared "
+            "in the problem boundary registry."
+        )
+
+    if loading.boundary not in declared_boundaries:
+        raise ValueError(
+            f"loading.boundary {loading.boundary!r} is not declared "
+            "in the problem boundary registry."
+        )
 
 
 def _build_constraints(
@@ -179,21 +257,17 @@ def _build_constraints(
     ------
     ValueError
         If the constraints configuration is malformed or contains an
-        unsupported rigid-body constraint mode or reference face.
+        unsupported rigid-body constraint mode.
 
     Notes
     -----
-    The ``constraints`` section is optional. Missing translation or
-    rotation groups, as well as missing individual modes, default to
-    :attr:`RigidBodyConstraintMode.UNCONSTRAINED`.
+    ``reference_boundary`` identifies a problem boundary on which the
+    global rigid-body reference functionals are evaluated. It does not
+    directly identify a geometry face or mesh entity.
 
-    ``reference_face`` identifies the coordinate-aligned face on which
-    global rigid-body reference functionals are evaluated. It is not a
-    physical displacement boundary condition.
-
-    Constraint modes and reference faces are converted through their
-    respective enums, which provide the closed vocabularies accepted by
-    the problem definition.
+    Boundary-name validation is performed by
+    :func:`_validate_boundary_references`, because it requires the
+    complete problem boundary registry.
     """
     if data is None:
         return RigidBodyConstraintDefinition()
@@ -201,17 +275,22 @@ def _build_constraints(
     if not isinstance(data, dict):
         raise ValueError("constraints must be a YAML mapping.")
 
-    reference_face_data = data.get("reference_face")
-    reference_face = (
-        None
-        if reference_face_data is None
-        else ReferenceFace(reference_face_data)
-    )
+    reference_boundary = data.get("reference_boundary")
+
+    if reference_boundary is not None and not isinstance(
+        reference_boundary,
+        str,
+    ):
+        raise ValueError(
+            "constraints.reference_boundary must be a string."
+        )
 
     rigid_body_data = data.get("rigid_body", {})
 
     if not isinstance(rigid_body_data, dict):
-        raise ValueError("constraints.rigid_body must be a YAML mapping.")
+        raise ValueError(
+            "constraints.rigid_body must be a YAML mapping."
+        )
 
     translation_data = rigid_body_data.get("translation", {})
     rotation_data = rigid_body_data.get("rotation", {})
@@ -227,48 +306,97 @@ def _build_constraints(
         )
 
     return RigidBodyConstraintDefinition(
-        reference_face=reference_face,
-        translation_x=RigidBodyConstraintMode(
+        reference_boundary=reference_boundary,
+        translation_x=_parse_constraint_mode(
             translation_data.get(
                 "x",
                 RigidBodyConstraintMode.UNCONSTRAINED.value,
-            )
+            ),
+            "constraints.rigid_body.translation.x",
         ),
-        translation_y=RigidBodyConstraintMode(
+        translation_y=_parse_constraint_mode(
             translation_data.get(
                 "y",
                 RigidBodyConstraintMode.UNCONSTRAINED.value,
-            )
+            ),
+            "constraints.rigid_body.translation.y",
         ),
-        translation_z=RigidBodyConstraintMode(
+        translation_z=_parse_constraint_mode(
             translation_data.get(
                 "z",
                 RigidBodyConstraintMode.UNCONSTRAINED.value,
-            )
+            ),
+            "constraints.rigid_body.translation.z",
         ),
-        rotation_x=RigidBodyConstraintMode(
+        rotation_x=_parse_constraint_mode(
             rotation_data.get(
                 "x",
                 RigidBodyConstraintMode.UNCONSTRAINED.value,
-            )
+            ),
+            "constraints.rigid_body.rotation.x",
         ),
-        rotation_y=RigidBodyConstraintMode(
+        rotation_y=_parse_constraint_mode(
             rotation_data.get(
                 "y",
                 RigidBodyConstraintMode.UNCONSTRAINED.value,
-            )
+            ),
+            "constraints.rigid_body.rotation.y",
         ),
-        rotation_z=RigidBodyConstraintMode(
+        rotation_z=_parse_constraint_mode(
             rotation_data.get(
                 "z",
                 RigidBodyConstraintMode.UNCONSTRAINED.value,
-            )
+            ),
+            "constraints.rigid_body.rotation.z",
         ),
     )
 
 
-def _build_boundary(data: dict[str, Any]) -> BoundaryDefinition:
-    """Construct the configured boundary definition.
+def _parse_constraint_mode(
+    value: Any,
+    field_name: str,
+) -> RigidBodyConstraintMode:
+    """Parse a rigid-body constraint mode.
+
+    Parameters
+    ----------
+    value
+        YAML value containing the constraint mode.
+    field_name
+        Configuration field name used in validation messages.
+
+    Returns
+    -------
+    RigidBodyConstraintMode
+        Parsed constraint mode.
+
+    Raises
+    ------
+    ValueError
+        If the value is not a supported constraint mode.
+    """
+    if not isinstance(value, str):
+        raise ValueError(
+            f"{field_name} must be a string."
+        )
+
+    try:
+        return RigidBodyConstraintMode(value)
+    except ValueError as exc:
+        allowed = tuple(
+            mode.value for mode in RigidBodyConstraintMode
+        )
+
+        raise ValueError(
+            f"Unsupported rigid-body constraint mode {value!r} "
+            f"for {field_name}. Expected one of {allowed}."
+        ) from exc
+
+
+def _build_boundary(
+    data: dict[str, Any],
+) -> BoundaryConditionDefinition:
+    """Construct the configured problem boundaries.
 
     Parameters
     ----------
@@ -277,32 +405,71 @@ def _build_boundary(data: dict[str, Any]) -> BoundaryDefinition:
 
     Returns
     -------
-    BoundaryDefinition
-        Structured representation of the configured boundary constraints.
+    BoundaryConditionDefinition
+        Structured problem boundaries and boundary conditions.
 
     Raises
     ------
     ValueError
-        If the boundary definition is malformed or contains an unsupported
-        boundary-condition type.
+        If the boundary definition is malformed, refers to an
+        undeclared problem boundary, or contains an unsupported
+        boundary-condition definition.
     """
-    try:
-        dirichlet_data = data["dirichlet"]
-    except KeyError as exc:
-        raise ValueError(
-            f"Missing required boundary section: {exc.args[0]!r}."
-        ) from exc
+    if not isinstance(data, dict):
+        raise ValueError("boundary must be a YAML mapping.")
+
+    dirichlet_data = data.get("dirichlet", {})
 
     if not isinstance(dirichlet_data, dict):
-        raise ValueError("boundary.dirichlet must be a YAML mapping.")
+        raise ValueError(
+            "boundary.dirichlet must be a YAML mapping."
+        )
+
+    boundaries: dict[str, BoundaryDefinition] = {}
+
+    for boundary_name, definition_data in data.items():
+        if boundary_name == "dirichlet":
+            continue
+
+        if not isinstance(definition_data, dict):
+            raise ValueError(
+                f"Problem boundary {boundary_name!r} must be "
+                "a YAML mapping."
+            )
+
+        try:
+            face = definition_data["face"]
+        except KeyError as exc:
+            raise ValueError(
+                f"Missing required boundary field {exc.args[0]!r} "
+                f"for problem boundary {boundary_name!r}."
+            ) from exc
+
+        if not isinstance(face, str):
+            raise ValueError(
+                "Boundary field 'face' for problem boundary "
+                f"{boundary_name!r} must be a string."
+            )
+
+        boundaries[str(boundary_name)] = BoundaryDefinition(
+            face=face,
+        )
 
     dirichlet: dict[str, DirichletBoundaryDefinition] = {}
 
-    for region, definition_data in dirichlet_data.items():
+    for boundary_name, definition_data in dirichlet_data.items():
+        boundary_name = str(boundary_name)
+
+        if boundary_name not in boundaries:
+            raise ValueError(
+                f"Dirichlet boundary {boundary_name!r} is not "
+                "declared in the problem boundary registry."
+            )
+
         if not isinstance(definition_data, dict):
             raise ValueError(
-                f"Dirichlet boundary definition for {region!r} "
-                "must be a YAML mapping."
+                "Dirichlet boundary definition for "
+                f"{boundary_name!r} must be a YAML mapping."
             )
 
         try:
@@ -310,25 +477,88 @@ def _build_boundary(data: dict[str, Any]) -> BoundaryDefinition:
         except KeyError as exc:
             raise ValueError(
                 f"Missing required Dirichlet field {exc.args[0]!r} "
-                f"for region {region!r}."
+                f"for boundary {boundary_name!r}."
             ) from exc
 
+        if not isinstance(component, str):
+            raise ValueError(
+                f"Dirichlet component for boundary "
+                f"{boundary_name!r} must be a string."
+            )
+
         value = definition_data.get("value")
+
         if value is not None:
             value = float(value)
 
-        dirichlet[str(region)] = DirichletBoundaryDefinition(
-            region=str(region),
-            component=str(component),
+        dirichlet[boundary_name] = DirichletBoundaryDefinition(
+            component=component,
             value=value,
         )
 
-    return BoundaryDefinition(
+    return BoundaryConditionDefinition(
+        boundaries=boundaries,
         dirichlet=dirichlet,
     )
 
 
-def _build_mechanics(data: dict[str, Any]) -> MechanicsDefinition:
+def _build_loading(
+    data: dict[str, Any],
+) -> LoadingDefinition:
+    """Construct the configured loading definition.
+
+    Parameters
+    ----------
+    data
+        Parsed ``loading`` section from the YAML problem definition.
+
+    Returns
+    -------
+    LoadingDefinition
+        Structured loading configuration.
+
+    Raises
+    ------
+    ValueError
+        If the loading configuration is malformed or required fields
+        are missing.
+
+    Notes
+    -----
+    Validation that ``boundary`` refers to a declared problem boundary
+    is performed by :func:`_validate_boundary_references`, because that
+    requires the complete problem boundary registry.
+    """
+    if not isinstance(data, dict):
+        raise ValueError("loading must be a YAML mapping.")
+
+    try:
+        loading_type = data["type"]
+        boundary = data["boundary"]
+        component = data["component"]
+        value = data["value"]
+    except KeyError as exc:
+        raise ValueError(
+            f"Missing required loading field: {exc.args[0]!r}."
+        ) from exc
+
+    if not isinstance(boundary, str):
+        raise ValueError("loading.boundary must be a string.")
+
+    if not isinstance(component, str):
+        raise ValueError("loading.component must be a string.")
+
+    return LoadingDefinition(
+        type=str(loading_type),
+        boundary=boundary,
+        component=component,
+        value=float(value),
+    )
+
+
+def _build_mechanics(
+    data: dict[str, Any],
+) -> MechanicsDefinition:
     """Construct the configured mechanics definition.
 
     Parameters
@@ -340,39 +570,111 @@ def _build_mechanics(data: dict[str, Any]) -> MechanicsDefinition:
     -------
     MechanicsDefinition
         Structured mechanics definition.
-    """
-    kinematics_data = data["kinematics"]
-    constitutive_data = data["constitutive"]
-    balance_data = data["balance"]
 
-    kinematics_type, kinematics_parameters = next(
-        iter(kinematics_data.items())
+    Raises
+    ------
+    ValueError
+        If a mechanics section is malformed or does not contain
+        exactly one configured model.
+    """
+    if not isinstance(data, dict):
+        raise ValueError("mechanics must be a YAML mapping.")
+
+    try:
+        kinematics_data = data["kinematics"]
+        constitutive_data = data["constitutive"]
+        balance_data = data["balance"]
+    except KeyError as exc:
+        raise ValueError(
+            f"Missing required mechanics section: {exc.args[0]!r}."
+        ) from exc
+
+    kinematics_type, kinematics_parameters = _single_model(
+        kinematics_data,
+        "mechanics.kinematics",
     )
-    constitutive_type, constitutive_parameters = next(
-        iter(constitutive_data.items())
+
+    constitutive_type, constitutive_parameters = _single_model(
+        constitutive_data,
+        "mechanics.constitutive",
     )
-    balance_type, balance_parameters = next(
-        iter(balance_data.items())
+
+    balance_type, balance_parameters = _single_model(
+        balance_data,
+        "mechanics.balance",
     )
 
     return MechanicsDefinition(
         kinematics=KinematicsDefinition(
-            type=str(kinematics_type),
-            parameters=kinematics_parameters,
+            models={
+                kinematics_type: kinematics_parameters,
+            },
         ),
         constitutive=ConstitutiveDefinition(
-            type=str(constitutive_type),
-            parameters=constitutive_parameters,
+            models={
+                constitutive_type: constitutive_parameters,
+            },
         ),
         balance=BalanceDefinition(
-            type=str(balance_type),
-            parameters=balance_parameters,
+            models={
+                balance_type: balance_parameters,
+            },
         ),
     )
 
 
-def _build_geometry(data: dict[str, Any]) -> Cylinder:
-    """Construct the configured geometry object.
+def _single_model(
+    data: Any,
+    field_name: str,
+) -> tuple[str, dict[str, Any]]:
+    """Extract the single configured model from a mechanics section.
+
+    Parameters
+    ----------
+    data
+        Parsed YAML mechanics model mapping.
+    field_name
+        Configuration field name used in validation messages.
+
+    Returns
+    -------
+    tuple[str, dict[str, Any]]
+        Model name and its parameter mapping.
+
+    Raises
+    ------
+    ValueError
+        If the section is not a mapping or does not contain exactly
+        one model.
+    """
+    if not isinstance(data, dict):
+        raise ValueError(
+            f"{field_name} must be a YAML mapping."
+        )
+
+    if len(data) != 1:
+        raise ValueError(
+            f"{field_name} must contain exactly one configured model."
+        )
+
+    model_name, parameters = next(iter(data.items()))
+
+    if parameters is None:
+        parameters = {}
+
+    if not isinstance(parameters, dict):
+        raise ValueError(
+            f"Configuration for {field_name}.{model_name} "
+            "must be a YAML mapping."
+        )
+
+    return str(model_name), dict(parameters)
+
+
+def _build_geometry(
+    data: dict[str, Any],
+) -> GeometryDefinition:
+    """Construct the declarative geometry definition.
 
     Parameters
     ----------
@@ -381,31 +683,36 @@ def _build_geometry(data: dict[str, Any]) -> Cylinder:
 
     Returns
     -------
-    Cylinder
-        Constructed cylinder geometry.
+    GeometryDefinition
+        Declarative geometry configuration.
 
     Raises
     ------
     ValueError
-        If the geometry type is unsupported.
-
-    Notes
-    -----
-    Cylinder geometry is the only supported geometry type in the initial
-    problem-definition loader. Additional geometry types can be added
-    without changing the public :func:`load_problem` interface.
+        If the geometry configuration is malformed or unsupported.
     """
-    geometry_type = data["type"]
+    if not isinstance(data, dict):
+        raise ValueError("geometry must be a YAML mapping.")
 
-    if geometry_type == "cylinder":
-        return Cylinder(
-            x0=data["x0"],
-            x1=data["x1"],
-            radius=data["radius"],
-        )
+    try:
+        geometry_type = data["type"]
+    except KeyError as exc:
+        raise ValueError(
+            f"Missing required geometry field: {exc.args[0]!r}."
+        ) from exc
 
-    raise ValueError(
-        f"Unsupported geometry type: {geometry_type!r}."
+    if not isinstance(geometry_type, str):
+        raise ValueError("geometry.type must be a string.")
+
+    parameters = {
+        key: value
+        for key, value in data.items()
+        if key != "type"
+    }
+
+    return GeometryDefinition(
+        type=geometry_type,
+        parameters=parameters,
     )
 
 

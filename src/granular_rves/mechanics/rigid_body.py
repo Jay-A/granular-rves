@@ -1,7 +1,8 @@
 """Definitions for rigid-body constraint modes.
 
-This module defines the supported modes for constraining rigid-body
-motions in a mechanics problem.
+This module defines the mechanics-level vocabulary used to describe
+constraints on rigid-body motions. It contains no numerical, mesh, or
+boundary-resolution logic.
 """
 
 from __future__ import annotations
@@ -26,14 +27,3 @@ class RigidBodyConstraintMode(str, Enum):
     UNCONSTRAINED = "unconstrained"
     ZERO = "zero"
     MEAN_ZERO = "mean_zero"
-
-
-class ReferenceFace(str, Enum):
-    """Coordinate-aligned reference faces."""
-
-    XM = "xm"
-    XP = "xp"
-    YM = "ym"
-    YP = "yp"
-    ZM = "zm"
-    ZP = "zp"
