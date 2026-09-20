@@ -18,7 +18,7 @@ mechanics:
 
   constitutive:
     linear_elastic:
-      youngs_modulus: 1.0e6
+      youngs_modulus: 100000.0
       poisson_ratio: 0.3
 
   balance:
