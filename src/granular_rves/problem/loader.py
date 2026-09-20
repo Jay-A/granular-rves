@@ -22,6 +22,10 @@ from granular_rves.mechanics.definitions import (
     KinematicsDefinition,
     MechanicsDefinition,
 )
+from granular_rves.mechanics.rigid_body import (
+    ReferenceFace,
+    RigidBodyConstraintMode,
+)
 from granular_rves.problem.definition import (
     AnalysisDefinition,
     BoundaryDefinition,
@@ -30,6 +34,11 @@ from granular_rves.problem.definition import (
     MeshDefinition,
     OutputDefinition,
     ProblemDefinition,
+    RigidBodyConstraintDefinition,
+)
+from granular_rves.mechanics.rigid_body import (
+    ReferenceFace,
+    RigidBodyConstraintMode,
 )
 from granular_rves.problem.geometry.geometry_types.cylinder import Cylinder
 
@@ -122,6 +131,7 @@ def _build_problem_definition(
     geometry = _build_geometry(geometry_data)
     mechanics = _build_mechanics(mechanics_data)
     boundary = _build_boundary(boundary_data)
+    constraints = _build_constraints(data.get("constraints"))
 
     return ProblemDefinition(
         name=str(data["name"]),
@@ -144,6 +154,115 @@ def _build_problem_definition(
         ),
         output=OutputDefinition(
             directory=str(output_data["directory"]),
+        ),
+        constraints=constraints,
+    )
+
+
+def _build_constraints(
+    data: dict[str, Any] | None,
+) -> RigidBodyConstraintDefinition:
+    """Construct the configured rigid-body constraint definition.
+
+    Parameters
+    ----------
+    data
+        Parsed ``constraints`` section from the YAML problem definition.
+        If ``None``, all rigid-body modes remain unconstrained.
+
+    Returns
+    -------
+    RigidBodyConstraintDefinition
+        Structured rigid-body constraint configuration.
+
+    Raises
+    ------
+    ValueError
+        If the constraints configuration is malformed or contains an
+        unsupported rigid-body constraint mode or reference face.
+
+    Notes
+    -----
+    The ``constraints`` section is optional. Missing translation or
+    rotation groups, as well as missing individual modes, default to
+    :attr:`RigidBodyConstraintMode.UNCONSTRAINED`.
+
+    ``reference_face`` identifies the coordinate-aligned face on which
+    global rigid-body reference functionals are evaluated. It is not a
+    physical displacement boundary condition.
+
+    Constraint modes and reference faces are converted through their
+    respective enums, which provide the closed vocabularies accepted by
+    the problem definition.
+    """
+    if data is None:
+        return RigidBodyConstraintDefinition()
+
+    if not isinstance(data, dict):
+        raise ValueError("constraints must be a YAML mapping.")
+
+    reference_face_data = data.get("reference_face")
+    reference_face = (
+        None
+        if reference_face_data is None
+        else ReferenceFace(reference_face_data)
+    )
+
+    rigid_body_data = data.get("rigid_body", {})
+
+    if not isinstance(rigid_body_data, dict):
+        raise ValueError("constraints.rigid_body must be a YAML mapping.")
+
+    translation_data = rigid_body_data.get("translation", {})
+    rotation_data = rigid_body_data.get("rotation", {})
+
+    if not isinstance(translation_data, dict):
+        raise ValueError(
+            "constraints.rigid_body.translation must be a YAML mapping."
+        )
+
+    if not isinstance(rotation_data, dict):
+        raise ValueError(
+            "constraints.rigid_body.rotation must be a YAML mapping."
+        )
+
+    return RigidBodyConstraintDefinition(
+        reference_face=reference_face,
+        translation_x=RigidBodyConstraintMode(
+            translation_data.get(
+                "x",
+                RigidBodyConstraintMode.UNCONSTRAINED.value,
+            )
+        ),
+        translation_y=RigidBodyConstraintMode(
+            translation_data.get(
+                "y",
+                RigidBodyConstraintMode.UNCONSTRAINED.value,
+            )
+        ),
+        translation_z=RigidBodyConstraintMode(
+            translation_data.get(
+                "z",
+                RigidBodyConstraintMode.UNCONSTRAINED.value,
+            )
+        ),
+        rotation_x=RigidBodyConstraintMode(
+            rotation_data.get(
+                "x",
+                RigidBodyConstraintMode.UNCONSTRAINED.value,
+            )
+        ),
+        rotation_y=RigidBodyConstraintMode(
+            rotation_data.get(
+                "y",
+                RigidBodyConstraintMode.UNCONSTRAINED.value,
+            )
+        ),
+        rotation_z=RigidBodyConstraintMode(
+            rotation_data.get(
+                "z",
+                RigidBodyConstraintMode.UNCONSTRAINED.value,
+            )
         ),
     )
 
@@ -175,9 +294,7 @@ def _build_boundary(data: dict[str, Any]) -> BoundaryDefinition:
         ) from exc
 
     if not isinstance(dirichlet_data, dict):
-        raise ValueError(
-            "boundary.dirichlet must be a YAML mapping."
-        )
+        raise ValueError("boundary.dirichlet must be a YAML mapping.")
 
     dirichlet: dict[str, DirichletBoundaryDefinition] = {}
 

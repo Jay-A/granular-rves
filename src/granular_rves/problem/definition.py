@@ -1,9 +1,23 @@
+"""Declarative definitions of simulation problems.
+
+This module contains the data structures used to represent a complete
+granular-rves problem definition independently of the numerical backend.
+
+The definitions in this module describe what problem the user has specified.
+They do not perform meshing, finite-element assembly, constraint enforcement,
+or solution.
+"""
+
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
 from granular_rves.mechanics.definitions import MechanicsDefinition
+from granular_rves.mechanics.rigid_body import (
+    ReferenceFace,
+    RigidBodyConstraintMode,
+)
 
 
 @dataclass(frozen=True)
@@ -13,13 +27,8 @@ class AnalysisDefinition:
     Parameters
     ----------
     type
-        Analysis regime. Supported values are ``"static"``,
-        ``"quasi_static"``, and ``"dynamic"``.
-
-    Notes
-    -----
-    The analysis definition describes the physical analysis regime rather
-    than the numerical solver used to execute it.
+        Analysis regime requested by the problem definition. The value is
+        interpreted by the numerical orchestration layer.
     """
 
     type: str
@@ -32,14 +41,7 @@ class MeshDefinition:
     Parameters
     ----------
     size
-        Target characteristic mesh size passed to the mesh-generation
-        procedure.
-
-    Notes
-    -----
-    The mesh definition describes the requested discretization. Mesh
-    generation and conversion to a DOLFINx mesh are handled by the
-    meshing layer.
+        Target characteristic mesh size used during mesh generation.
     """
 
     size: float
@@ -52,26 +54,13 @@ class DirichletBoundaryDefinition:
     Parameters
     ----------
     region
-        Name of the geometric boundary region on which the constraint
-        is applied.
+        Name of the physical boundary region to which the constraint applies.
     component
-        Spatial displacement component constrained by the boundary
-        condition, such as ``"x"``, ``"y"``, or ``"z"``.
+        Displacement component being constrained. Expected values are
+        ``"x"``, ``"y"``, or ``"z"``.
     value
-        Prescribed displacement value. ``None`` indicates that the
-        current value is supplied by a loading definition during
-        numerical execution.
-
-    Notes
-    -----
-    This definition describes the physical constraint independently of
-    the numerical representation used to enforce it. In particular, it
-    does not contain DOLFINx facet indices, degrees of freedom, function
-    spaces, or boundary-condition objects.
-
-    For a loading-controlled boundary, ``value`` is ``None`` and the
-    corresponding current value is supplied by the numerical loading
-    procedure at each applicable loading step.
+        Prescribed displacement value. ``None`` indicates that the value is
+        supplied by the loading definition during execution.
     """
 
     region: str
@@ -86,19 +75,64 @@ class BoundaryDefinition:
     Parameters
     ----------
     dirichlet
-        Prescribed-displacement boundary constraints.
-
-    Notes
-    -----
-    Only explicitly constrained boundaries are represented here.
-    Boundaries absent from ``dirichlet`` are not implicitly constrained.
-
-    Consequently, a geometric boundary such as a lateral surface can
-    remain unconstrained and therefore receive its natural boundary
-    condition from the variational formulation.
+        Mapping from boundary-region names to prescribed-displacement
+        definitions.
     """
 
     dirichlet: dict[str, DirichletBoundaryDefinition]
+
+
+@dataclass(frozen=True)
+class RigidBodyConstraintDefinition:
+    """Definition of rigid-body constraint modes.
+
+    Parameters
+    ----------
+    reference_face
+        Coordinate-aligned reference face on which global rigid-body
+        reference functionals are evaluated. This does not impose a
+        physical displacement constraint on the face.
+    translation_x
+        Constraint mode for rigid translation along the global x axis.
+    translation_y
+        Constraint mode for rigid translation along the global y axis.
+    translation_z
+        Constraint mode for rigid translation along the global z axis.
+    rotation_x
+        Constraint mode for rigid rotation about the global x axis.
+    rotation_y
+        Constraint mode for rigid rotation about the global y axis.
+    rotation_z
+        Constraint mode for rigid rotation about the global z axis.
+
+    Notes
+    -----
+    All rigid-body modes default to
+    :attr:`RigidBodyConstraintMode.UNCONSTRAINED`. This allows problem
+    definitions that are already physically constrained to omit a
+    ``constraints`` section entirely.
+    """
+
+    reference_face: ReferenceFace | None = None
+
+    translation_x: RigidBodyConstraintMode = (
+        RigidBodyConstraintMode.UNCONSTRAINED
+    )
+    translation_y: RigidBodyConstraintMode = (
+        RigidBodyConstraintMode.UNCONSTRAINED
+    )
+    translation_z: RigidBodyConstraintMode = (
+        RigidBodyConstraintMode.UNCONSTRAINED
+    )
+    rotation_x: RigidBodyConstraintMode = (
+        RigidBodyConstraintMode.UNCONSTRAINED
+    )
+    rotation_y: RigidBodyConstraintMode = (
+        RigidBodyConstraintMode.UNCONSTRAINED
+    )
+    rotation_z: RigidBodyConstraintMode = (
+        RigidBodyConstraintMode.UNCONSTRAINED
+    )
 
 
 @dataclass(frozen=True)
@@ -108,32 +142,18 @@ class LoadingDefinition:
     Parameters
     ----------
     type
-        Loading type, such as ``"displacement"`` or ``"traction"``.
+        Type of loading applied to the problem.
     region
-        Named geometric region to which the loading is applied.
+        Name of the physical region to which the loading applies.
     component
-        Spatial component affected by the loading, such as ``"x"``,
-        ``"y"``, or ``"z"``.
+        Displacement component being loaded. Expected values are
+        ``"x"``, ``"y"``, or ``"z"``.
     start
-        Initial value of the prescribed loading quantity.
+        Initial value of the loading parameter.
     end
-        Final value of the prescribed loading quantity.
+        Final value of the loading parameter.
     steps
-        Number of increments used to apply the loading path.
-
-    Notes
-    -----
-    The loading definition describes the requested evolution of a
-    loading quantity over the simulation. It does not itself apply a
-    boundary condition, construct a numerical state, or perform
-    numerical stepping.
-
-    The numerical execution layer is responsible for interpreting this
-    loading path according to the selected analysis and supplying the
-    current loading value to the appropriate numerical mechanism.
-
-    Boundary constraints are represented separately by
-    :class:`BoundaryDefinition`.
+        Number of loading steps.
     """
 
     type: str
@@ -152,11 +172,6 @@ class OutputDefinition:
     ----------
     directory
         Directory in which simulation output is written.
-
-    Notes
-    -----
-    The output definition specifies requested output configuration only.
-    Writing simulation data is handled by the output layer.
     """
 
     directory: str
@@ -164,38 +179,32 @@ class OutputDefinition:
 
 @dataclass(frozen=True)
 class ProblemDefinition:
-    """Complete definition of a granular-rves simulation problem.
+    """Complete declarative definition of a granular-rves problem.
 
     Parameters
     ----------
     name
-        Unique or descriptive name assigned to the simulation problem.
+        Name identifying the problem.
     analysis
-        Definition of the physical analysis regime.
+        Analysis regime for the simulation.
     geometry
-        Geometry object defining the physical domain.
+        Declarative geometry definition.
     mesh
-        Definition of the requested finite-element discretization.
+        Finite-element mesh definition.
     mechanics
-        Definition of the mechanics models used by the simulation.
+        Mechanics model definitions.
     boundary
-        Definition of the prescribed boundary constraints.
+        Physical boundary constraints.
     loading
-        Definition of the applied loading path.
+        Loading definition for the problem.
     output
-        Definition of simulation output.
-
-    Notes
-    -----
-    ``ProblemDefinition`` is the contract between problem configuration
-    and simulation execution. A problem loader constructs this object
-    from an external problem specification, while the simulation runner
-    consumes it to orchestrate geometry construction, mesh generation,
-    mechanics, solution, and output.
-
-    The definition itself does not perform any numerical operations and
-    does not depend on DOLFINx, UFL, PETSc, or a particular numerical
-    solution procedure.
+        Output configuration.
+    constraints
+        Optional reference constraints on rigid-body modes. If omitted,
+        all rigid-body modes are unconstrained. The reference face identifies
+        the coordinate-aligned face on which global rigid-body reference
+        functionals are evaluated; it does not impose a physical displacement
+        constraint on that face.
     """
 
     name: str
@@ -206,3 +215,7 @@ class ProblemDefinition:
     boundary: BoundaryDefinition
     loading: LoadingDefinition
     output: OutputDefinition
+    constraints: RigidBodyConstraintDefinition = field(
+        default_factory=RigidBodyConstraintDefinition
+    )
+

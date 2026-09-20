@@ -70,6 +70,7 @@
 !src/granular_rves/mechanics/boundary/
 !src/granular_rves/mechanics/boundary/__init__.py
 !src/granular_rves/mechanics/definitions.py
+!src/granular_rves/mechanics/rigid_body.py
 
 # -- -- Problem (src) 
 !src/granular_rves/problem/
@@ -93,6 +94,8 @@
 # -- -- Numerical (src) 
 !src/granular_rves/numerical/
 !src/granular_rves/numerical/__init__.py
+!src/granular_rves/numerical/formulation/
+!src/granular_rves/numerical/formulation/rigid_body.py 
 
 # -- -- I/O (src) 
 !src/granular_rves/io/

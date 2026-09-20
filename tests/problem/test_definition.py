@@ -16,6 +16,7 @@ from granular_rves.problem.definition import (
     MeshDefinition,
     OutputDefinition,
     ProblemDefinition,
+    RigidBodyConstraintDefinition,
 )
 from granular_rves.problem.geometry.geometry_types.cylinder import Cylinder
 
@@ -208,5 +209,50 @@ def test_geometry_is_preserved() -> None:
     )
 
     assert problem.geometry is geometry
+
+
+def test_rigid_body_constraint_definition_defaults() -> None:
+    """Rigid-body constraints default to unconstrained."""
+    constraints = RigidBodyConstraintDefinition()
+
+    assert constraints.translation_x == "unconstrained"
+    assert constraints.translation_y == "unconstrained"
+    assert constraints.translation_z == "unconstrained"
+    assert constraints.rotation_x == "unconstrained"
+    assert constraints.rotation_y == "unconstrained"
+    assert constraints.rotation_z == "unconstrained"
+
+
+def test_rigid_body_constraint_definition_preserves_configuration() -> None:
+    """Rigid-body constraints preserve the configured modes."""
+    constraints = RigidBodyConstraintDefinition(
+        translation_x="mean_zero",
+        translation_y="mean_zero",
+        translation_z="zero",
+        rotation_x="unconstrained",
+        rotation_y="unconstrained",
+        rotation_z="zero",
+    )
+
+    assert constraints.translation_x == "mean_zero"
+    assert constraints.translation_y == "mean_zero"
+    assert constraints.translation_z == "zero"
+    assert constraints.rotation_x == "unconstrained"
+    assert constraints.rotation_y == "unconstrained"
+    assert constraints.rotation_z == "zero"
+
+
+def test_problem_definition_defaults_rigid_body_constraints() -> None:
+    """Problem definitions default rigid-body constraints to unconstrained."""
+    problem = make_problem()
+
+    assert isinstance(problem.constraints, RigidBodyConstraintDefinition)
+    assert problem.constraints.translation_x == "unconstrained"
+    assert problem.constraints.translation_y == "unconstrained"
+    assert problem.constraints.translation_z == "unconstrained"
+    assert problem.constraints.rotation_x == "unconstrained"
+    assert problem.constraints.rotation_y == "unconstrained"
+    assert problem.constraints.rotation_z == "unconstrained"
+
 
 

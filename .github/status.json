@@ -2,8 +2,8 @@
   "tests": {
     "summary": {
       "status": "passed",
-      "total": 80,
-      "passed": 80,
+      "total": 88,
+      "passed": 88,
       "failed": 0,
       "skipped": 0
     },
@@ -161,6 +161,46 @@
       {
         "name": "test_unknown_displacement_component_is_rejected",
         "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_explicit_integrator_requires_positive_dt",
+        "file": "tests.numerical.integrator.test_explicit",
+        "status": "passed"
+      },
+      {
+        "name": "test_explicit_integrator_stores_dt",
+        "file": "tests.numerical.integrator.test_explicit",
+        "status": "passed"
+      },
+      {
+        "name": "test_explicit_step_updates_velocity_and_displacement",
+        "file": "tests.numerical.integrator.test_explicit",
+        "status": "passed"
+      },
+      {
+        "name": "test_explicit_step_advances_time",
+        "file": "tests.numerical.integrator.test_explicit",
+        "status": "passed"
+      },
+      {
+        "name": "test_explicit_step_is_accepted_and_complete",
+        "file": "tests.numerical.integrator.test_explicit",
+        "status": "passed"
+      },
+      {
+        "name": "test_explicit_step_does_not_modify_previous_state",
+        "file": "tests.numerical.integrator.test_explicit",
+        "status": "passed"
+      },
+      {
+        "name": "test_steady_solver_returns_solution",
+        "file": "tests.numerical.solver.test_steady",
+        "status": "passed"
+      },
+      {
+        "name": "test_steady_solver_preserves_zero_solution",
+        "file": "tests.numerical.solver.test_steady",
         "status": "passed"
       },
       {
