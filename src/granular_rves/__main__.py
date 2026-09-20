@@ -31,6 +31,7 @@ from granular_rves.problem.geometry.meshing import (
     create_mesh,
 )
 from granular_rves.problem.loader import load_problem
+from granular_rves.io.output import write_solution
 
 
 class Reporter:
@@ -204,6 +205,15 @@ def solve_steady(
     solution = solver.solve()
 
     report("Steady-state solve completed.")
+
+
+    write_solution(
+        mesh_data=mesh_data,
+        solution=solution,
+        output_directory=problem.output.directory,
+    )
+
+    report("Solution written to output.")
 
     return solution
 

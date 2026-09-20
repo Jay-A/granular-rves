@@ -4,6 +4,12 @@ Three-dimensional computational mechanics of realistic granular microstructures.
 
 [![Documentation](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://jay-a.github.io/granular-rves/)
 
+<a href="docs/_static/cylinder_disp_z.png">
+  <img src="docs/_static/cylinder_disp_z.png"
+       alt="Cylinder compression z-displacement field"
+       width="500">
+</a>
+
 ## Technologies
 
 ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)

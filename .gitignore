@@ -41,6 +41,8 @@
 !docs/report/figures/.gitkeep
 !docs/report/sections/
 !docs/report/sections/*.tex
+!docs/_static/
+!docs/_static/cylinder_disp_z.png 
 
 !report
 !report/granular-rves-report.pdf
