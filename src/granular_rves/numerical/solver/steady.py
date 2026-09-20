@@ -261,7 +261,7 @@ class SteadySolver:
         )
 
         solver = PETSc.KSP().create(
-            self.formulation.mesh.comm
+            self.formulation.mesh.comm,
         )
         solver.setOperators(matrix)
         solver.setType(PETSc.KSP.Type.PREONLY)
@@ -326,9 +326,6 @@ class SteadySolver:
         where ``K`` is the displacement stiffness matrix and ``C`` contains
         the assembled constraint functionals.
 
-        The matrix is assembled directly in AIJ format rather than being
-        constructed as a PETSc nested matrix and subsequently converted.
-
         Parameters
         ----------
         matrix
@@ -357,10 +354,9 @@ class SteadySolver:
         augmented.setUp()
 
         # Copy the displacement stiffness matrix into the upper-left block.
-        matrix_rows, matrix_columns = matrix.getOwnershipRange()
-        column_start, column_end = matrix.getOwnershipRangeColumn()
+        row_start, row_end = matrix.getOwnershipRange()
 
-        for row_index in range(matrix_rows, matrix_columns):
+        for row_index in range(row_start, row_end):
             columns, values = matrix.getRow(row_index)
 
             if len(columns) > 0:
@@ -387,7 +383,6 @@ class SteadySolver:
                     column,
                     value,
                 )
-
                 augmented.setValue(
                     column,
                     constraint_row,
@@ -404,57 +399,6 @@ class SteadySolver:
         augmented.assemble()
 
         return augmented
-
-    def _rows_to_matrix(
-        self,
-        rows: list[PETSc.Vec],
-        number_of_columns: int,
-        comm: Any,
-    ) -> PETSc.Mat:
-        """Convert assembled constraint vectors into a PETSc matrix.
-
-        Parameters
-        ----------
-        rows
-            Assembled displacement-space constraint vectors.
-        number_of_columns
-            Number of displacement degrees of freedom.
-        comm
-            PETSc communicator.
-
-        Returns
-        -------
-        petsc4py.PETSc.Mat
-            Constraint matrix whose rows contain the assembled constraint
-            functionals.
-        """
-        number_of_rows = len(rows)
-
-        constraint_matrix = PETSc.Mat().createAIJ(
-            [
-                number_of_rows,
-                number_of_columns,
-            ],
-            comm=comm,
-        )
-        constraint_matrix.setUp()
-
-        for row_index, row in enumerate(rows):
-            start, end = row.getOwnershipRange()
-
-            for column in range(start, end):
-                value = row.getValue(column)
-
-                if value != 0.0:
-                    constraint_matrix.setValue(
-                        row_index,
-                        column,
-                        value,
-                    )
-
-        constraint_matrix.assemble()
-
-        return constraint_matrix
 
     def _create_augmented_rhs(
         self,
@@ -481,7 +425,7 @@ class SteadySolver:
 
         start, end = vector.getOwnershipRange()
         values = vector.getValues(
-            list(range(start, end))
+            list(range(start, end)),
         )
 
         if end > start:
@@ -512,6 +456,7 @@ class SteadySolver:
         """
         solution, _ = matrix.createVecs()
         solution.set(0.0)
+
         return solution
 
     def _extract_displacement(
@@ -536,7 +481,7 @@ class SteadySolver:
             return
 
         values = solution.getValues(
-            list(range(start, end))
+            list(range(start, end)),
         )
 
         displacement_vector.setValues(
@@ -569,15 +514,9 @@ class SteadySolver:
         """
         matrix.assemble()
 
-        diagonal = matrix.getDiagonal()
-        diagonal_values = diagonal.getArray(readonly=True)
-
-        matrix.view()
-
         solver = PETSc.KSP().create(
             self.formulation.mesh.comm,
         )
-
         solver.setOperators(matrix)
         solver.setType(PETSc.KSP.Type.PREONLY)
 
@@ -597,4 +536,5 @@ class SteadySolver:
                 f"to converge (reason={reason}, "
                 f"residual={solver.getResidualNorm():.6e})."
             )
+
 

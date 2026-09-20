@@ -14,23 +14,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Mapping
 
+from granular_rves.problem.geometry.definition import GeometryDefinition
 from granular_rves.mechanics.rigid_body import RigidBodyConstraintMode
-
-
-@dataclass(frozen=True)
-class GeometryDefinition:
-    """Definition of the problem geometry.
-
-    Parameters
-    ----------
-    type
-        Geometry type identifier.
-    parameters
-        Geometry-specific parameters.
-    """
-
-    type: str
-    parameters: Mapping[str, Any]
 
 
 @dataclass(frozen=True)

@@ -2,12 +2,17 @@
   "tests": {
     "summary": {
       "status": "passed",
-      "total": 110,
-      "passed": 110,
+      "total": 121,
+      "passed": 121,
       "failed": 0,
       "skipped": 0
     },
     "pytest_tests": [
+      {
+        "name": "test_cylinder_compression",
+        "file": "tests.integration.test_cylinder_compression",
+        "status": "passed"
+      },
       {
         "name": "test_linear_elastic_parameters",
         "file": "tests.mechanics.constitutive.test_linear_elastic",
@@ -149,7 +154,12 @@
         "status": "passed"
       },
       {
-        "name": "test_unknown_boundary_region_is_rejected",
+        "name": "test_unknown_problem_boundary_is_rejected",
+        "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_unknown_geometry_face_is_rejected",
         "file": "tests.numerical.boundary.test_dirichlet",
         "status": "passed"
       },
@@ -171,6 +181,36 @@
       {
         "name": "test_unknown_displacement_component_is_rejected",
         "file": "tests.numerical.boundary.test_dirichlet",
+        "status": "passed"
+      },
+      {
+        "name": "test_create_boundary_measure",
+        "file": "tests.numerical.boundary.test_reference",
+        "status": "passed"
+      },
+      {
+        "name": "test_create_boundary_measure_for_supported_boundaries[bottom]",
+        "file": "tests.numerical.boundary.test_reference",
+        "status": "passed"
+      },
+      {
+        "name": "test_create_boundary_measure_for_supported_boundaries[top]",
+        "file": "tests.numerical.boundary.test_reference",
+        "status": "passed"
+      },
+      {
+        "name": "test_create_boundary_measure_for_supported_boundaries[lateral]",
+        "file": "tests.numerical.boundary.test_reference",
+        "status": "passed"
+      },
+      {
+        "name": "test_unknown_problem_boundary_is_rejected",
+        "file": "tests.numerical.boundary.test_reference",
+        "status": "passed"
+      },
+      {
+        "name": "test_unknown_geometry_face_is_rejected",
+        "file": "tests.numerical.boundary.test_reference",
         "status": "passed"
       },
       {
@@ -275,6 +315,11 @@
       },
       {
         "name": "test_steady_solver_preserves_zero_solution",
+        "file": "tests.numerical.solver.test_steady",
+        "status": "passed"
+      },
+      {
+        "name": "test_steady_solver_with_constraint_returns_solution",
         "file": "tests.numerical.solver.test_steady",
         "status": "passed"
       },
@@ -459,7 +504,7 @@
         "status": "passed"
       },
       {
-        "name": "test_geometry_is_preserved",
+        "name": "test_geometry_definition_is_preserved",
         "file": "tests.problem.test_definition",
         "status": "passed"
       },
@@ -499,11 +544,6 @@
         "status": "passed"
       },
       {
-        "name": "test_load_problem_defaults_rigid_body_constraints",
-        "file": "tests.problem.test_loader",
-        "status": "passed"
-      },
-      {
         "name": "test_load_problem_rigid_body_constraints",
         "file": "tests.problem.test_loader",
         "status": "passed"
@@ -514,7 +554,22 @@
         "status": "passed"
       },
       {
-        "name": "test_load_problem_rejects_invalid_reference_face",
+        "name": "test_load_problem_rejects_undeclared_dirichlet_boundary",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem_preserves_boundary_registry",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem_rejects_undeclared_reference_boundary",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem_rejects_undeclared_loading_boundary",
         "file": "tests.problem.test_loader",
         "status": "passed"
       },

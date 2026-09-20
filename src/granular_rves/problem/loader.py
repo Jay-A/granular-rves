@@ -17,13 +17,13 @@ from typing import Any
 import yaml
 
 from granular_rves.mechanics.rigid_body import RigidBodyConstraintMode
+from granular_rves.problem.geometry.definition import GeometryDefinition
 from granular_rves.problem.definition import (
     BalanceDefinition,
     BoundaryConditionDefinition,
     BoundaryDefinition,
     ConstitutiveDefinition,
     DirichletBoundaryDefinition,
-    GeometryDefinition,
     KinematicsDefinition,
     LoadingDefinition,
     MechanicsDefinition,
@@ -704,15 +704,21 @@ def _build_geometry(
     if not isinstance(geometry_type, str):
         raise ValueError("geometry.type must be a string.")
 
+    name = data.get("name")
+
+    if name is not None and not isinstance(name, str):
+        raise ValueError("geometry.name must be a string.")
+
     parameters = {
         key: value
         for key, value in data.items()
-        if key != "type"
+        if key not in {"name", "type"}
     }
 
     return GeometryDefinition(
         type=geometry_type,
         parameters=parameters,
+        name=name,
     )
 
 

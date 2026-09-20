@@ -45,6 +45,14 @@ boundary:
 constraints:
   reference_boundary: bottom
 
+  rigid_body:
+    translation:
+      x: mean_zero
+      y: mean_zero
+
+    rotation:
+      z: mean_zero
+
 loading:
   type: displacement
   boundary: top

@@ -1,6 +1,6 @@
 import pytest
 
-from granular_rves.problem.geometry.definitions import GeometryDefinition
+from granular_rves.problem.geometry.definition import GeometryDefinition
 
 
 def test_valid_geometry_definition() -> None:
@@ -41,16 +41,25 @@ def test_geometry_definition_rejects_empty_type(
         )
 
 
-@pytest.mark.parametrize("name", [123, None])
+@pytest.mark.parametrize("name", [123])
 def test_geometry_definition_rejects_non_string_name(
     name: object,
 ) -> None:
     with pytest.raises(TypeError, match="name must be a string"):
         GeometryDefinition(
-            name=name,
             type="cylinder",
+            name=name,
             parameters={},
         )
+
+
+def test_geometry_definition_defaults_name_to_type() -> None:
+    geometry = GeometryDefinition(
+        type="cylinder",
+        parameters={},
+    )
+
+    assert geometry.name == "cylinder"
 
 
 @pytest.mark.parametrize("geometry_type", [123, None])
