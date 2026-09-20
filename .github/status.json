@@ -2,8 +2,8 @@
   "tests": {
     "summary": {
       "status": "passed",
-      "total": 121,
-      "passed": 121,
+      "total": 124,
+      "passed": 124,
       "failed": 0,
       "skipped": 0
     },
@@ -324,6 +324,11 @@
         "status": "passed"
       },
       {
+        "name": "test_steady_solver_responds_to_nonzero_loading",
+        "file": "tests.numerical.solver.test_steady",
+        "status": "passed"
+      },
+      {
         "name": "test_elasticity_formulation",
         "file": "tests.numerical.test_formulation_elasticity",
         "status": "passed"
@@ -434,7 +439,7 @@
         "status": "passed"
       },
       {
-        "name": "test_geometry_definition_rejects_non_string_name[None]",
+        "name": "test_geometry_definition_defaults_name_to_type",
         "file": "tests.problem.geometry.test_definitions",
         "status": "passed"
       },
@@ -570,6 +575,16 @@
       },
       {
         "name": "test_load_problem_rejects_undeclared_loading_boundary",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem_defaults_geometry_name_to_type",
+        "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_load_problem_preserves_geometry_name",
         "file": "tests.problem.test_loader",
         "status": "passed"
       },
