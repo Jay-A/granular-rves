@@ -10,7 +10,7 @@ geometry:
   radius: 1.0
 
 mesh:
-  size: 0.25
+  size: 0.1
 
 mechanics:
   kinematics:
@@ -57,7 +57,7 @@ loading:
   type: displacement
   boundary: top
   component: z
-  value: -0.01
+  value: -0.05
 
 output:
   directory: output/example
