@@ -11,6 +11,8 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
 
+import numpy as np
+
 from dolfinx import default_scalar_type, fem
 
 from granular_rves.problem.definition import BoundaryConditionDefinition
@@ -21,6 +23,110 @@ _COMPONENT_INDICES = {
     "y": 1,
     "z": 2,
 }
+
+
+def locate_dirichlet_dofs(
+    mesh_data: Any,
+    function_space: fem.FunctionSpace,
+    boundary: BoundaryConditionDefinition,
+    boundary_name: str,
+) -> list[tuple[str, np.ndarray]]:
+    """Locate displacement DOFs prescribed on a named boundary.
+
+    Parameters
+    ----------
+    mesh_data
+        DOLFINx ``MeshData`` associated with the finite-element mesh.
+    function_space
+        Vector-valued displacement function space.
+    boundary
+        Problem-level boundary and Dirichlet definitions.
+    boundary_name
+        Name of the problem boundary.
+
+    Returns
+    -------
+    list[tuple[str, numpy.ndarray]]
+        Pairs containing the constrained displacement component and the
+        corresponding unrolled DOF indices.
+    """
+    if boundary_name not in boundary.boundaries:
+        raise ValueError(
+            f"Problem boundary {boundary_name!r} is not declared "
+            "in the boundary registry.",
+        )
+
+    if boundary_name not in boundary.dirichlet:
+        raise ValueError(
+            f"Boundary {boundary_name!r} has no Dirichlet definition.",
+        )
+
+    mesh = mesh_data.mesh
+    facet_tags = mesh_data.facet_tags
+    physical_groups = mesh_data.physical_groups
+
+    problem_boundary = boundary.boundaries[boundary_name]
+    definition = boundary.dirichlet[boundary_name]
+    geometry_face = problem_boundary.face
+
+    try:
+        physical_group = physical_groups[geometry_face]
+    except KeyError as exc:
+        raise ValueError(
+            f"Geometry face {geometry_face!r}, associated with "
+            f"Dirichlet boundary {boundary_name!r}, is not present "
+            "in the mesh physical groups.",
+        ) from exc
+
+    expected_dimension = mesh.topology.dim - 1
+
+    if physical_group.dim != expected_dimension:
+        raise ValueError(
+            f"Geometry face {geometry_face!r}, associated with "
+            f"Dirichlet boundary {boundary_name!r}, has geometric "
+            f"dimension {physical_group.dim}, but boundary facets "
+            f"have dimension {expected_dimension}.",
+        )
+
+    try:
+        component = _COMPONENT_INDICES[definition.component]
+    except KeyError as exc:
+        raise ValueError(
+            f"Unknown displacement component "
+            f"{definition.component!r} for Dirichlet boundary "
+            f"{boundary_name!r}. Expected one of "
+            f"{tuple(_COMPONENT_INDICES)}.",
+        ) from exc
+
+    if component >= mesh.geometry.dim:
+        raise ValueError(
+            f"Displacement component {definition.component!r} is "
+            f"not available on a {mesh.geometry.dim}D mesh.",
+        )
+
+    facets = facet_tags.find(physical_group.tag)
+
+    if facets.size == 0:
+        raise ValueError(
+            f"Geometry face {geometry_face!r}, associated with "
+            f"Dirichlet boundary {boundary_name!r}, has no tagged "
+            "facets.",
+        )
+
+    subspace = function_space.sub(component)
+
+    dofs = fem.locate_dofs_topological(
+        subspace,
+        mesh.topology.dim - 1,
+        facets,
+    )
+
+    return [
+        (
+            definition.component,
+            np.asarray(dofs, dtype=np.int32),
+        ),
+    ]
 
 
 def create_dirichlet_bcs(

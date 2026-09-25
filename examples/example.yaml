@@ -61,5 +61,13 @@ loading:
 
 output:
   directory: output/example
+  reaction_history: true
+  reactions:
+    - name: top_force
+      boundary: top
+      component: z
+    - name: bottom_force
+      boundary: bottom
+      component: z
 
 

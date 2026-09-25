@@ -10,9 +10,12 @@ from __future__ import annotations
 from typing import Any
 
 import numpy as np
+from mpi4py import MPI
 from dolfinx import fem
 from dolfinx.fem import petsc
 from petsc4py import PETSc
+
+from granular_rves.numerical.boundary.dirichlet import locate_dirichlet_dofs
 
 
 class SteadySolver:
@@ -81,6 +84,9 @@ class SteadySolver:
         formulation: Any,
         boundary_conditions: list[Any] | tuple[Any, ...],
         constraints: list[Any] | tuple[Any, ...] | None = None,
+        boundary: Any = None,
+        loading: Any = None,
+        reactions: list[Any] | tuple[Any, ...] | None = None,
     ) -> None:
         """Initialize the steady-state solver.
 
@@ -99,6 +105,12 @@ class SteadySolver:
         self.formulation = formulation
         self.boundary_conditions = list(boundary_conditions)
         self.constraints = [] if constraints is None else list(constraints)
+        self.boundary = boundary
+        self.loading = loading
+        self.reactions = [] if reactions is None else list(reactions)
+        self.constraint_multipliers = np.zeros(0, dtype=float)
+        self.constraint_rows: list[PETSc.Vec] = []
+        self.reaction_history: list[dict[str, float | int]] = []
 
     def solve(self) -> fem.Function:
         """Solve the steady finite-element problem.
@@ -107,12 +119,31 @@ class SteadySolver:
         -------
         dolfinx.fem.Function
             The solved displacement field.
-
-        Raises
-        ------
-        RuntimeError
-            If the PETSc linear solver does not converge.
         """
+        self.reaction_history = []
+
+        # Initial state: zero displacement.
+        initial_displacement = fem.Function(
+            self.formulation.function_space,
+        )
+
+        if self.reactions and self.boundary is not None:
+            for reaction_definition in self.reactions:
+                reaction = self._compute_boundary_reaction(
+                    initial_displacement,
+                    reaction_definition.boundary,
+                    reaction_definition.component,
+                )
+
+                self.reaction_history.append(
+                    {
+                        "name": reaction_definition.name,
+                        "step": 0,
+                        "time": 0.0,
+                        "reaction": reaction,
+                    },
+                )
+
         bilinear_form = fem.form(
             self.formulation.bilinear_form()
         )
@@ -132,42 +163,69 @@ class SteadySolver:
         )
 
         if not self.constraints:
-            return self._solve_unconstrained(matrix, vector)
+            self.constraint_rows = []
+            self.constraint_multipliers = np.zeros(0, dtype=float)
+            solution = self._solve_unconstrained(matrix, vector)
+        else:
+            constraint_rows = self._assemble_constraint_rows()
+            self.constraint_rows = constraint_rows
 
-        constraint_rows = self._assemble_constraint_rows()
+            augmented_matrix = self._create_augmented_matrix(
+                matrix,
+                constraint_rows,
+            )
 
-        augmented_matrix = self._create_augmented_matrix(
-            matrix,
-            constraint_rows,
-        )
+            augmented_rhs = self._create_augmented_rhs(
+                augmented_matrix,
+                vector,
+            )
 
-        augmented_rhs = self._create_augmented_rhs(
-            augmented_matrix,
-            vector,
-        )
+            augmented_solution = self._create_augmented_solution(
+                augmented_matrix,
+            )
 
-        solution = self._create_augmented_solution(
-            augmented_matrix,
-        )
+            self._solve_augmented(
+                augmented_matrix,
+                augmented_rhs,
+                augmented_solution,
+            )
 
-        self._solve_augmented(
-            augmented_matrix,
-            augmented_rhs,
-            solution,
-        )
+            displacement = fem.Function(
+                self.formulation.function_space,
+            )
 
-        displacement = fem.Function(
-            self.formulation.function_space
-        )
+            self._extract_displacement(
+                augmented_solution,
+                displacement,
+            )
 
-        self._extract_displacement(
-            solution,
-            displacement,
-        )
+            self._extract_constraint_multipliers(
+                augmented_solution,
+            )
 
-        displacement.x.scatter_forward()
+            displacement.x.scatter_forward()
+            solution = displacement
 
-        return displacement
+        # Final state.
+        if self.reactions and self.boundary is not None:
+            for reaction_definition in self.reactions:
+                reaction = self._compute_boundary_reaction(
+                    solution,
+                    reaction_definition.boundary,
+                    reaction_definition.component,
+                )
+
+                self.reaction_history.append(
+                    {
+                        "name": reaction_definition.name,
+                        "step": 1,
+                        "time": 1.0,
+                        "reaction": reaction,
+                    },
+                )
+
+        return solution
+
 
     def _assemble_rhs(
         self,
@@ -490,6 +548,43 @@ class SteadySolver:
         )
         displacement_vector.assemble()
 
+    def _extract_constraint_multipliers(
+        self,
+        solution: PETSc.Vec,
+    ) -> None:
+        """Store the solved Lagrange multipliers.
+
+        The augmented solution vector stores displacement degrees of freedom
+        first, followed by one scalar multiplier for each global constraint.
+        """
+        displacement_size = self.formulation.function_space.dofmap.index_map.size_global * (
+            self.formulation.function_space.dofmap.index_map_bs
+        )
+
+        number_of_constraints = len(self.constraints)
+
+        if number_of_constraints == 0:
+            self.constraint_multipliers = np.zeros(0, dtype=float)
+            return
+
+        comm = self.formulation.mesh.comm
+
+        if comm.rank == 0:
+            indices = list(
+                range(
+                    displacement_size,
+                    displacement_size + number_of_constraints,
+                )
+            )
+            values = solution.getValues(indices)
+            local_values = np.asarray(values, dtype=float)
+        else:
+            local_values = np.zeros(number_of_constraints, dtype=float)
+
+        comm.Bcast(local_values, root=0)
+
+        self.constraint_multipliers = local_values
+
     def _solve_augmented(
         self,
         matrix: PETSc.Mat,
@@ -538,3 +633,64 @@ class SteadySolver:
             )
 
 
+    def _compute_boundary_reaction(
+        self,
+        displacement: fem.Function,
+        boundary_name: str,
+        component: str,
+    ) -> float:
+        """Compute the reaction on the configured loading boundary.
+
+        The reaction is obtained from the equilibrium residual
+
+            r(v) = a(u, v) - L(v)
+
+        evaluated on the prescribed displacement DOFs belonging to the
+        loading boundary and component.
+        """
+        residual_form = fem.form(
+            self.formulation.residual_form(displacement),
+        )
+
+        residual = petsc.assemble_vector(residual_form)
+
+        residual.ghostUpdate(
+            addv=PETSc.InsertMode.ADD_VALUES,
+            mode=PETSc.ScatterMode.REVERSE,
+        )
+
+        dofs_by_component = locate_dirichlet_dofs(
+            mesh_data=self.formulation.mesh_data,
+            function_space=self.formulation.function_space,
+            boundary=self.boundary,
+            boundary_name=boundary_name,
+        )
+
+        component_dofs = None
+
+        for dof_component, dofs in dofs_by_component:
+            if dof_component == component:
+                component_dofs = dofs
+                break
+
+        if component_dofs is None:
+            raise ValueError(
+                f"Could not locate loading component "
+                f"{component!r} on boundary "
+                f"{boundary_name!r}.",
+            )
+
+        local_reaction = float(
+            np.sum(
+                residual.getValues(
+                    component_dofs.tolist(),
+                ),
+            ),
+        )
+
+        return float(
+            self.formulation.mesh.comm.allreduce(
+                local_reaction,
+                op=MPI.SUM,
+            ),
+        )

@@ -104,6 +104,44 @@ class ElasticityFormulation:
             ("Lagrange", 1, (self.mesh.geometry.dim,)),
         )
 
+    def residual_form(
+        self,
+        displacement: fem.Function,
+    ) -> Any:
+        """Construct the equilibrium residual form at a displacement.
+
+        The residual is defined by
+
+            r(v) = a(u, v) - L(v),
+
+        where ``u`` is the supplied displacement field and ``v`` is an
+        arbitrary test function.
+
+        Parameters
+        ----------
+        displacement
+            Displacement field at which the residual is evaluated.
+
+        Returns
+        -------
+        Any
+            UFL linear form representing the finite-element equilibrium
+            residual.
+        """
+        test_function = ufl.TestFunction(self.function_space)
+
+        strain = self.kinematics.strain(displacement)
+        stress = self.constitutive.stress(strain)
+
+        virtual_strain = self.kinematics.strain(test_function)
+
+        internal_virtual_work = ufl.inner(
+            stress,
+            virtual_strain,
+        ) * ufl.dx(domain=self.mesh)
+
+        return internal_virtual_work - self.linear_form()
+
     def bilinear_form(self) -> Any:
         """Construct the elasticity bilinear form.
 

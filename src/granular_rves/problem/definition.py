@@ -171,6 +171,15 @@ class LoadingDefinition:
 
 
 @dataclass(frozen=True)
+class ReactionDefinition:
+    """Definition of a boundary reaction measurement."""
+
+    name: str
+    boundary: str
+    component: str
+
+
+@dataclass(frozen=True)
 class OutputDefinition:
     """Definition of simulation output.
 
@@ -181,6 +190,8 @@ class OutputDefinition:
     """
 
     directory: str
+    reaction_history: bool = False
+    reactions: tuple[ReactionDefinition, ...] = ()
 
 
 @dataclass(frozen=True)

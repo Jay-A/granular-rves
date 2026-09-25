@@ -29,6 +29,7 @@ from granular_rves.problem.definition import (
     MechanicsDefinition,
     MeshDefinition,
     OutputDefinition,
+    ReactionDefinition,
     ProblemDefinition,
     RigidBodyConstraintDefinition,
 )
@@ -176,6 +177,15 @@ def _build_problem_definition(
             f"Missing required mesh field: {exc.args[0]!r}."
         ) from exc
 
+    reaction_definitions = tuple(
+        ReactionDefinition(
+            name=str(reaction["name"]),
+            boundary=str(reaction["boundary"]),
+            component=str(reaction["component"]),
+        )
+        for reaction in output_data.get("reactions", [])
+    )
+
     return ProblemDefinition(
         name=str(data["name"]),
         analysis=str(analysis_type),
@@ -190,6 +200,8 @@ def _build_problem_definition(
         loading=loading,
         output=OutputDefinition(
             directory=str(output_directory),
+            reaction_history=bool(output_data.get("reaction_history", False)),
+            reactions=reaction_definitions,
         ),
     )
 
