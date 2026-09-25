@@ -4,14 +4,16 @@ Three-dimensional computational mechanics of realistic granular microstructures 
 
 [Repository](https://github.com/jay-a/granular-rves)
 
-## Documentation
-
-Documentation is currently under development.
-
 [View the project report](pdf/index)
+
+## Documentation
 
 ```{toctree}
 :maxdepth: 2
 :hidden:
 
-pdf/index
+getting_started
+user_guide
+examples
+api
+```

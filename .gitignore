@@ -32,6 +32,10 @@
 !docs/
 !docs/conf.py
 !docs/index.md
+!docs/api.rst
+!docs/getting_started.md
+!docs/user_guide.md
+!docs/examples.md
 !docs/pdf/
 !docs/pdf/index.md
 !docs/report/
@@ -42,7 +46,7 @@
 !docs/report/sections/
 !docs/report/sections/*.tex
 !docs/_static/
-!docs/_static/cylinder_disp_z.png 
+!docs/_static/cylinder_disp_z.png
 
 !report
 !report/granular-rves-report.pdf
@@ -88,6 +92,9 @@
 !src/granular_rves/problem/geometry/geometry_types/
 !src/granular_rves/problem/geometry/geometry_types/__init__.py
 !src/granular_rves/problem/geometry/geometry_types/cylinder.py
+!src/granular_rves/problem/geometry/definition.py
+!src/granular_rves/problem/geometry/definitions.py
+!src/granular_rves/problem/geometry/meshing.py
 
 # -- -- Problem boundary/loading (src) 
 !src/granular_rves/problem/loading/
@@ -117,6 +124,7 @@
 
 !src/granular_rves/numerical/solver/
 !src/granular_rves/numerical/solver/__init__.py
+!src/granular_rves/numerical/solver/steady.py
 
 # -- -- Numerical tests
 !tests/numerical/
@@ -201,3 +209,19 @@
 
 !tests/problem/test_loader.py
 !tests/problem/geometry/test_meshing.py
+
+# -- Runtime (src)
+!src/granular_rves/runtime/
+!src/granular_rves/runtime/__init__.py
+!src/granular_rves/runtime/simulation.py
+!src/granular_rves/runtime/solver.py
+
+# -- Response (src)
+!src/granular_rves/response/
+!src/granular_rves/response/__init__.py
+!src/granular_rves/response/reaction.py
+
+# -- Problem geometry (src)
+!src/granular_rves/problem/geometry/definition.py
+!src/granular_rves/problem/geometry/definitions.py
+!src/granular_rves/problem/geometry/meshing.py
