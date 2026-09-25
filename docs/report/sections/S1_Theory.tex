@@ -204,6 +204,52 @@ The reference problem will exploit the axisymmetric structure of the cylindrical
 
 Verification quantities will include the macroscopic reaction force and, where appropriate, displacement and strain-field comparisons. Mesh refinement will be used to determine whether the three-dimensional finite element solution approaches the reference solution systematically.
 
+\subsection{Reaction-force Definition and Evaluation}
+
+The macroscopic reaction force is defined on the actual boundary of the finite-element domain on which the displacement constraint is imposed. No extrapolation of the stress field beyond the finite-element mesh is used to define the reaction.
+
+For a loaded boundary $\Gamma_L$ with outward unit normal $\mathbf{n}$, the corresponding continuum resultant is
+
+$$
+\mathbf{F}_R
+=
+\int_{\Gamma_L}
+\boldsymbol{\sigma}\mathbf{n}\,d\Gamma.
+$$
+
+In the present displacement-controlled formulation, the primary numerical reaction will instead be evaluated from the discrete finite-element equilibrium system. For the linear system
+
+$$
+\mathbf{K}\mathbf{u}=\mathbf{f},
+$$
+
+the residual associated with the prescribed displacement degrees of freedom represents the reaction required to enforce the Dirichlet constraints. The resultant reaction is therefore obtained from the constrained degrees of freedom of the discrete problem rather than from extrapolation of interior quantities.
+
+The boundary traction resultant provides an independent verification quantity. Where the finite-element stress field is sufficiently regular on the boundary, the traction-based evaluation
+
+$$
+\mathbf{F}_{\Gamma}
+=
+\int_{\Gamma_L}
+\boldsymbol{\sigma}\mathbf{n}\,d\Gamma
+$$
+
+will be compared with the reaction obtained from the discrete constrained system. Agreement between these two evaluations provides an additional equilibrium check on the implementation and post-processing.
+
+The reaction will be retained as a vector quantity,
+
+$$
+\mathbf{F}_R =
+\begin{bmatrix}
+F_x & F_y & F_z
+\end{bmatrix}^{T},
+$$
+
+rather than being reduced immediately to a scalar magnitude. A scalar compressive force will subsequently be obtained by projection onto the prescribed loading direction, with the sign convention stated explicitly. This representation avoids introducing a hidden assumption about the loading direction and permits the same response definition to be reused for other loading orientations and future contact formulations.
+
+This distinction between the physical boundary resultant and its discrete numerical evaluation will be maintained throughout the benchmark. The same reaction-force definition will subsequently be used when constructing the macroscopic force--displacement and stress--strain response.
+
+
 \subsection{Finite-Strain Extension}
 
 After the small-strain benchmark has been verified, the same geometric and loading configuration will be extended to finite-strain elasticity. The finite-strain formulation will introduce the deformation gradient and a nonlinear constitutive response, initially using a compressible Neo-Hookean model whose small-strain limit is consistent with the selected linear-elastic material parameters.

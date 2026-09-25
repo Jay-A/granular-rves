@@ -2,8 +2,8 @@
   "tests": {
     "summary": {
       "status": "passed",
-      "total": 124,
-      "passed": 124,
+      "total": 128,
+      "passed": 128,
       "failed": 0,
       "skipped": 0
     },
@@ -586,6 +586,26 @@
       {
         "name": "test_load_problem_preserves_geometry_name",
         "file": "tests.problem.test_loader",
+        "status": "passed"
+      },
+      {
+        "name": "test_simulation_manager_runs_solver_and_returns_result",
+        "file": "tests.runtime.test_simulation",
+        "status": "passed"
+      },
+      {
+        "name": "test_solver_controller_rejects_unsupported_analysis",
+        "file": "tests.runtime.test_solver",
+        "status": "passed"
+      },
+      {
+        "name": "test_solver_controller_rejects_unimplemented_transient_analysis",
+        "file": "tests.runtime.test_solver",
+        "status": "passed"
+      },
+      {
+        "name": "test_solver_controller_dispatches_steady_analysis",
+        "file": "tests.runtime.test_solver",
         "status": "passed"
       },
       {
