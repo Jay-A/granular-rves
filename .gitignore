@@ -1,227 +1,252 @@
-# - Ignore everything by default - #
-
 *
 **
 
-# -  Allow files as we add them for explicit intent - #
-
-# -- Repository metadata and top-level files
-
-!LICENSE
-!README.md
-!pyproject.toml
-!build_info.json
 !.gitignore
 !.gitattributes
+!LICENSE
+!README.md
+!build_info.json 
+!pyproject.toml
+
 !.github/
-!.github/**
 !.github/status.json
-!scripts/precommit.py
+!.github/workflows/
+!.github/workflows/docs.yaml
+
 !.githooks/
 !.githooks/pre-commit
 
-.github/workflows/bkp_docs.yaml
-
-# -- Examples
-
-!examples/
-!examples/example.yaml
-
-# -- Documentation
-
 !docs/
-!docs/conf.py
-!docs/index.md
-!docs/api.rst
-!docs/getting_started.md
-!docs/user_guide.md
-!docs/examples.md
-!docs/pdf/
-!docs/pdf/index.md
-!docs/report/
-!docs/report/main.tex
-!docs/report/references.bib
-!docs/report/figures/
-!docs/report/figures/.gitkeep
-!docs/report/sections/
-!docs/report/sections/*.tex
 !docs/_static/
 !docs/_static/cylinder_disp_z.png
 
-!report
-!report/granular-rves-report.pdf
+!docs/api.rst
+!docs/conf.py
+!docs/examples.md
+!docs/getting_started.md
+!docs/index.md
 
-# -- Source package (src)
+!docs/report/figures/
 
-!src/
-!src/granular_rves/
-!src/granular_rves/__init__.py
-!src/granular_rves/__main__.py
+!docs/pdf/
+!docs/pdf/index.md
 
-# -- -- Mechanics (src) 
-!src/granular_rves/mechanics/
-!src/granular_rves/mechanics/__init__.py
-!src/granular_rves/mechanics/kinematics/
-!src/granular_rves/mechanics/kinematics/__init__.py
-!src/granular_rves/mechanics/kinematics/small_strain.py
-!src/granular_rves/mechanics/constitutive/
-!src/granular_rves/mechanics/constitutive/__init__.py
-!src/granular_rves/mechanics/constitutive/linear_elastic.py
-!src/granular_rves/mechanics/balance/
-!src/granular_rves/mechanics/balance/__init__.py
-!src/granular_rves/mechanics/contact/
-!src/granular_rves/mechanics/contact/__init__.py
-!src/granular_rves/mechanics/damage/
-!src/granular_rves/mechanics/damage/__init__.py
-!src/granular_rves/mechanics/boundary/
-!src/granular_rves/mechanics/boundary/__init__.py
-!src/granular_rves/mechanics/definitions.py
-!src/granular_rves/mechanics/rigid_body.py
+!docs/report/
+!docs/report/main.tex
+!docs/report/references.bib
 
-# -- -- Problem (src) 
-!src/granular_rves/problem/
-!src/granular_rves/problem/__init__.py
-!src/granular_rves/problem/definition.py
-!src/granular_rves/problem/loader.py
+!docs/report/sections/
+!docs/report/sections/S0_Introduction.tex
+!docs/report/sections/S1_Theory.tex
+!docs/report/sections/S2_ComputationalToolchain.tex
+!docs/report/sections/S3_Usage.tex
+!docs/report/sections/S4_ComputationalExperiments.tex
+!docs/report/sections/S5_VerificationAndValidation.tex
+!docs/report/sections/S6_Results.tex
+!docs/report/sections/S7_ResearchDirection.tex
+!docs/report/sections/S8_Reproducibility.tex
 
-# -- -- Problem geometry (src) 
-!src/granular_rves/problem/geometry/
-!src/granular_rves/problem/geometry/__init__.py
-!src/granular_rves/problem/geometry/definitions.py
-!src/granular_rves/problem/geometry/meshing.py
-!src/granular_rves/problem/geometry/geometry_types/
-!src/granular_rves/problem/geometry/geometry_types/__init__.py
-!src/granular_rves/problem/geometry/geometry_types/cylinder.py
-!src/granular_rves/problem/geometry/definition.py
-!src/granular_rves/problem/geometry/definitions.py
-!src/granular_rves/problem/geometry/meshing.py
-
-# -- -- Problem boundary/loading (src) 
-!src/granular_rves/problem/loading/
-!src/granular_rves/problem/loading/__init__.py
-
-# -- -- Numerical (src) 
-!src/granular_rves/numerical/
-!src/granular_rves/numerical/__init__.py
-!src/granular_rves/numerical/formulation/
-!src/granular_rves/numerical/formulation/rigid_body.py 
-
-# -- -- I/O (src) 
-!src/granular_rves/io/
-!src/granular_rves/io/__init__.py
-
-# -- -- Numerical (src)
-!src/granular_rves/numerical/
-!src/granular_rves/numerical/__init__.py
-
-!src/granular_rves/numerical/boundary/
-!src/granular_rves/numerical/boundary/__init__.py
-!src/granular_rves/numerical/boundary/dirichlet.py
-
-!src/granular_rves/numerical/formulation/
-!src/granular_rves/numerical/formulation/__init__.py
-!src/granular_rves/numerical/formulation/elasticity.py
-
-!src/granular_rves/numerical/solver/
-!src/granular_rves/numerical/solver/__init__.py
-!src/granular_rves/numerical/solver/steady.py
-
-# -- -- Numerical tests
-!tests/numerical/
-!tests/numerical/test_formulation_elasticity.py
-!tests/numerical/boundary/
-!tests/numerical/boundary/test_dirichlet.py
-
-# -- Tests
-!dev_tests/
-!dev_tests/manual/
-!dev_tests/manual/test_gmsh_dolfinx.py
-!dev_tests/problem/
-!dev_tests/problem/geometry/
-!dev_tests/problem/geometry/test_meshing.py
-
-!tests/problem/
-!tests/problem/__init__.py
-!tests/problem/test_definition.py
-!tests/problem/test_loader.py
-
-!tests/problem/geometry/
-!tests/problem/geometry/__init__.py
-!tests/problem/geometry/test_definitions.py
-!tests/problem/geometry/test_meshing.py
-
-!tests/problem/geometry/geometry_types/
-!tests/problem/geometry/geometry_types/__init__.py
-!tests/problem/geometry/geometry_types/test_cylinder.py
-
-!tests/test_generate_build_info.py
-!tests/test_populate_report_fields.py
-!tests/test_pytest_metadata.py
-
-!tests/mechanics/
-!tests/mechanics/__init__.py
-!tests/mechanics/test_definitions.py
-!tests/mechanics/kinematics/
-!tests/mechanics/kinematics/test_small_strain.py
-!tests/mechanics/constitutive/
-!tests/mechanics/constitutive/test_linear_elastic.py
-
-# -- Tooling
-
-!scripts/
-!scripts/__init__.py
-!scripts/generate_build_info.py
-!scripts/populate_report_fields.py
-!scripts/pytest_metadata.py
-
-# -- Environment
+!docs/user_guide.md
 
 !environment/
 !environment/README.md
 !environment/spack.yaml
 !environment/spack.lock
-!spack-config/
-!spack-config/config.yaml 
-
-# --  Project-local Spack repository
 
 !spack/
 !spack/repo/
 !spack/repo/repo.yaml
 !spack/repo/packages/
-!spack/repo/packages/**
+!spack/repo/packages/mesa/
+!spack/repo/packages/mesa/package.py
+!spack/repo/packages/mesa/mesa-25.0.5-glibc-2.43.patch
 
+!examples/
+!examples/example.yaml
 
-# -- Numerical (src)
+!report/
+!report/granular-rves-report.pdf
+
+!scripts/
+!scripts/__init__.py
+!scripts/generate_build_info.py
+!scripts/populate_report_fields.py
+!scripts/precommit.py
+!scripts/pytest_metadata.py
+
+# Source
+!src/
+!src/granular_rves/
+
+# Source: package entry points
+!src/granular_rves/__init__.py
+!src/granular_rves/__main__.py
+
+# Source: I/O
+!src/granular_rves/io/
+!src/granular_rves/io/__init__.py
+!src/granular_rves/io/output.py
+
+# Source: mechanics
+!src/granular_rves/mechanics/
+!src/granular_rves/mechanics/__init__.py
+!src/granular_rves/mechanics/definitions.py
+!src/granular_rves/mechanics/rigid_body.py
+
+# Source: mechanics/balance
+!src/granular_rves/mechanics/balance/
+!src/granular_rves/mechanics/balance/__init__.py
+
+# Source: mechanics/boundary
+!src/granular_rves/mechanics/boundary/
+!src/granular_rves/mechanics/boundary/__init__.py
+
+# Source: mechanics/constitutive
+!src/granular_rves/mechanics/constitutive/
+!src/granular_rves/mechanics/constitutive/__init__.py
+!src/granular_rves/mechanics/constitutive/linear_elastic.py
+
+# Source: mechanics/contact
+!src/granular_rves/mechanics/contact/
+!src/granular_rves/mechanics/contact/__init__.py
+
+# Source: mechanics/damage
+!src/granular_rves/mechanics/damage/
+!src/granular_rves/mechanics/damage/__init__.py
+
+# Source: mechanics/kinematics
+!src/granular_rves/mechanics/kinematics/
+!src/granular_rves/mechanics/kinematics/__init__.py
+!src/granular_rves/mechanics/kinematics/small_strain.py
+
+# Source: numerical
+!src/granular_rves/numerical/
+!src/granular_rves/numerical/__init__.py
+
+# Source: numerical/boundary
+!src/granular_rves/numerical/boundary/
+!src/granular_rves/numerical/boundary/__init__.py
+!src/granular_rves/numerical/boundary/dirichlet.py
+!src/granular_rves/numerical/boundary/reference.py
+
+# Source: numerical/formulation
+!src/granular_rves/numerical/formulation/
+!src/granular_rves/numerical/formulation/elasticity.py
+!src/granular_rves/numerical/formulation/rigid_body.py
+
+# Source: numerical/integrator
 !src/granular_rves/numerical/integrator/
 !src/granular_rves/numerical/integrator/__init__.py
 !src/granular_rves/numerical/integrator/explicit.py
+
+# Source: numerical/solver
+!src/granular_rves/numerical/solver/
 !src/granular_rves/numerical/solver/steady.py
 
-# -- Numerical tests
-!tests/numerical/integrator/
-!tests/numerical/integrator/test_explicit.py
-!tests/numerical/solver/
-!tests/numerical/solver/test_steady.py
+# Source: problem
+!src/granular_rves/problem/
+!src/granular_rves/problem/__init__.py
+!src/granular_rves/problem/definition.py
+!src/granular_rves/problem/loader.py
 
-# -- Problem tests
-!tests/problem/geometry/test_gmsh_dolfinx.py
+# Source: problem/geometry
+!src/granular_rves/problem/geometry/
+!src/granular_rves/problem/geometry/__init__.py
+!src/granular_rves/problem/geometry/definition.py
+!src/granular_rves/problem/geometry/definitions.py
+!src/granular_rves/problem/geometry/meshing.py
 
-!tests/problem/test_loader.py
-!tests/problem/geometry/test_meshing.py
+# Source: problem/geometry/geometry_types
+!src/granular_rves/problem/geometry/geometry_types/
+!src/granular_rves/problem/geometry/geometry_types/__init__.py
+!src/granular_rves/problem/geometry/geometry_types/cylinder.py
 
-# -- Runtime (src)
+# Source: problem/loading
+!src/granular_rves/problem/loading/
+!src/granular_rves/problem/loading/__init__.py
+
+# Source: response
+!src/granular_rves/response/
+!src/granular_rves/response/__init__.py
+!src/granular_rves/response/reaction.py
+
+# Source: runtime
 !src/granular_rves/runtime/
 !src/granular_rves/runtime/__init__.py
 !src/granular_rves/runtime/simulation.py
 !src/granular_rves/runtime/solver.py
 
-# -- Response (src)
-!src/granular_rves/response/
-!src/granular_rves/response/__init__.py
-!src/granular_rves/response/reaction.py
 
-# -- Problem geometry (src)
-!src/granular_rves/problem/geometry/definition.py
-!src/granular_rves/problem/geometry/definitions.py
-!src/granular_rves/problem/geometry/meshing.py
+# Tests
+!tests/
+
+# Tests: integration
+!tests/integration/
+!tests/integration/test_cylinder_compression.py
+
+# Tests: mechanics
+!tests/mechanics/
+!tests/mechanics/__init__.py
+!tests/mechanics/test_definitions.py
+!tests/mechanics/test_rigid_body.py
+
+# Tests: mechanics/constitutive
+!tests/mechanics/constitutive/
+!tests/mechanics/constitutive/test_linear_elastic.py
+
+# Tests: mechanics/kinematics
+!tests/mechanics/kinematics/
+!tests/mechanics/kinematics/test_small_strain.py
+
+# Tests: numerical
+!tests/numerical/
+!tests/numerical/__init__.py
+!tests/numerical/test_formulation_elasticity.py
+
+# Tests: numerical/boundary
+!tests/numerical/boundary/
+!tests/numerical/boundary/test_dirichlet.py
+!tests/numerical/boundary/test_reference.py
+
+# Tests: numerical/formulation
+!tests/numerical/formulation/
+!tests/numerical/formulation/test_rigid_body.py
+
+# Tests: numerical/integrator
+!tests/numerical/integrator/
+!tests/numerical/integrator/test_explicit.py
+
+# Tests: numerical/solver
+!tests/numerical/solver/
+!tests/numerical/solver/test_steady.py
+
+# Tests: problem
+!tests/problem/
+!tests/problem/__init__.py
+!tests/problem/test_definition.py
+!tests/problem/test_loader.py
+
+# Tests: problem/geometry
+!tests/problem/geometry/
+!tests/problem/geometry/__init__.py
+!tests/problem/geometry/test_definitions.py
+!tests/problem/geometry/test_gmsh_dolfinx.py
+!tests/problem/geometry/test_meshing.py
+
+# Tests: problem/geometry/geometry_types
+!tests/problem/geometry/geometry_types/
+!tests/problem/geometry/geometry_types/__init__.py
+!tests/problem/geometry/geometry_types/test_cylinder.py
+
+# Tests: runtime
+!tests/runtime/
+!tests/runtime/__init__.py
+!tests/runtime/test_simulation.py
+!tests/runtime/test_solver.py
+
+# Tests: project tooling
+!tests/test_generate_build_info.py
+!tests/test_populate_report_fields.py
+!tests/test_pytest_metadata.py
+
+
