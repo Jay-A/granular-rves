@@ -46,6 +46,9 @@
 !docs/report/sections/S7_ResearchDirection.tex
 !docs/report/sections/S8_Reproducibility.tex
 
+!docs/report/figures/
+!docs/report/figures/.gitkeep
+
 !docs/user_guide.md
 
 !environment/
